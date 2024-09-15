@@ -104,16 +104,14 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
 
         private void Update()
         {
+            if (!IsOwner) return;
             float distanceFromStartPosition = Vector3.Distance(startPosition, transform.position);
             distanceFromStartPosition = Mathf.Clamp(distanceFromStartPosition, 0, range);
 
             damageRangeFactor = (rb.velocity.magnitude / maxVelocity) * (damageRangeCurve.Evaluate(distanceFromStartPosition / range));
             damage = (!source.data.alwaysApplyFire ? source.data.damage / source.data.shotCount : source.data.damage) * damageRangeFactor;
 
-            if (IsOwner)
-            {
-                RaycastServerRpc();
-            }
+            RaycastServerRpc();
 
             if (useAutoScaling)
             {
@@ -147,8 +145,7 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
                 if (penetrationStrenght > 0)
                 {
                     RaycastHit hit = hits[i];
-                    Debug.Log(hits[i].transform.name);
-                    //UpdateHits(ray, hit);
+                    UpdateHits(hit);
                 }
             }
         }
@@ -163,7 +160,7 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             previousPosition = transform.position;
         }
 
-        private void UpdateHits(Ray ray, RaycastHit hit)
+        private void UpdateHits(RaycastHit hit)
         {
             //stop if object has ignore component
             if (hit.transform.TryGetComponent(out IgnoreHitDetection ignore)) return;
@@ -186,9 +183,29 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             }
             
             if (penetrationStrenght > 0)
-                Demo.Scripts.Runtime.Item.Weapon.UpdateHits(source, this, defaultDecal, ray, hit, damage, damageRangeFactor, decalDirection);
+                //Demo.Scripts.Runtime.Item.Weapon.UpdateHits(source, this, defaultDecal, ray, hit, damage, damageRangeFactor, decalDirection);
+                GetDamage(hit, damage, damageRangeFactor);
             else
                 Destroy(gameObject);
+        }
+
+        public void GetDamage(RaycastHit hit, float damage, float damageRangeFactor)
+        {
+            switch (hit.collider.gameObject.tag)
+            {
+                case "Head":
+                    Debug.Log("Head");
+                    //hit.collider.gameObject.GetComponent<PlayerSpirit>().TakeDamage(damage, PlayerSpirit.BodyPart.HEAD);
+                    break;
+                case "Body":
+                    Debug.Log("Body");
+                    //hit.collider.gameObject.GetComponent<PlayerSpirit>().TakeDamage(damage, PlayerSpirit.BodyPart.BODY);
+                    break;
+                case "Lower body":
+                    Debug.Log("Lower body");
+                    //hit.collider.gameObject.GetComponent<PlayerSpirit>().TakeDamage(damage, PlayerSpirit.BodyPart.LOWER_BODY);
+                    break;
+            }    
         }
 
         public virtual void OnHit(RaycastHit hit)

@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
 public class PlayerSpirit : NetworkBehaviour, IHealthSystem
@@ -29,6 +30,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 
     public void TakeDamage(float damage, BodyPart position)
     {
+        Debug.Log("Rpc");
         getShot = true;
         switch (position)
         {
@@ -86,4 +88,9 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     }
 
     public static event Action<float> PlayerHealthUpdate;
+    // public void TakeDamage(float damage, BodyPart position)
+    // {
+    //     Debug.Log("Damage");
+    //     TakeDamageServerRpc(damage, position);
+    // }
 }
