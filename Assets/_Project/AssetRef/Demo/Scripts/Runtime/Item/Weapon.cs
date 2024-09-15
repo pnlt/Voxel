@@ -14,6 +14,7 @@ using Akila.FPSFramework;
 using Demo.Scripts.Runtime.Character;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
+using Unity.Netcode;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
@@ -313,7 +314,18 @@ namespace Demo.Scripts.Runtime.Item
              FPSHitInfo hitInfo = new FPSHitInfo(projectile, ray, hit);
              GameObject currentDecal = defaultDecal;
 
-             //if (weapon != null && weapon._fpsController.gameObject == hit.transform) return;
+             switch (hit.collider.gameObject.tag)
+             {
+                 case "Head":
+                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.HEAD);
+                     break;
+                 case "Body":
+                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.BODY);
+                     break;
+                 case "Lower body":
+                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.LOWER_BODY);
+                     break;
+             }
 
              if (hit.transform.TryGetComponent(out CustomDecal customDecal))
              {
@@ -393,6 +405,8 @@ namespace Demo.Scripts.Runtime.Item
             if (data.projectile) {
                 FPSProjectiles projectile;
                 projectile = CreateProjectile(data.projectile, this, muzzle, muzzle.forward, data.muzzleVelocity, data.range, projectileParent.transform);
+                var projectileOnNetwork = projectile.GetComponent<NetworkObject>();
+                projectileOnNetwork.Spawn(true);
             }
 
             ThrowCasing();

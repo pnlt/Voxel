@@ -57,6 +57,14 @@ namespace Demo.Scripts.Runtime.Character
         {
            transform.position = new Vector3(Random.Range(positionRange, -positionRange), 0, Random.Range(positionRange, -positionRange));
         }
+
+        public PlayerSpirit PlayerSpirit
+        {
+            get
+            {
+                return GetComponent<PlayerSpirit>();
+            }
+        }
         
 
         public int MaxSlot
@@ -482,7 +490,7 @@ namespace Demo.Scripts.Runtime.Character
             if (!IsOwner) return;
 
             // Send weapon drop action to the server
-            DropWeaponServerRpc();
+            //DropWeaponServerRpc();
         }
         
         [ServerRpc]
