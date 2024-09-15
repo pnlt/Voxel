@@ -1,0 +1,263 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c9c04639ae548bdb0a8e927492d029d, type: 3}
+  m_Name: Rig_SM_Chr_Bombsuit_Male_01
+  m_EditorClassIdentifier: 
+  targetAnimator: {fileID: 9100000, guid: 70b165214a68c65428af65a49a82895b, type: 2}
+  inputConfig: {fileID: 11400000, guid: 022095d8cf55fba4080ab3e4c1364954, type: 2}
+  rigHierarchy:
+  - name: Root
+    index: 0
+    isVirtual: 0
+  - name: Hips
+    index: 1
+    isVirtual: 0
+  - name: Spine_01
+    index: 2
+    isVirtual: 0
+  - name: Spine_02
+    index: 3
+    isVirtual: 0
+  - name: Spine_03
+    index: 4
+    isVirtual: 0
+  - name: Clavicle_L
+    index: 5
+    isVirtual: 0
+  - name: Shoulder_L
+    index: 6
+    isVirtual: 0
+  - name: Elbow_L
+    index: 7
+    isVirtual: 0
+  - name: Hand_L
+    index: 8
+    isVirtual: 0
+  - name: Finger_01
+    index: 9
+    isVirtual: 0
+  - name: Finger_02
+    index: 10
+    isVirtual: 0
+  - name: Finger_03
+    index: 11
+    isVirtual: 0
+  - name: Finger_04
+    index: 12
+    isVirtual: 0
+  - name: IndexFinger_01
+    index: 13
+    isVirtual: 0
+  - name: IndexFinger_02
+    index: 14
+    isVirtual: 0
+  - name: IndexFinger_03
+    index: 15
+    isVirtual: 0
+  - name: IndexFinger_04
+    index: 16
+    isVirtual: 0
+  - name: Thumb_01
+    index: 17
+    isVirtual: 0
+  - name: Thumb_02
+    index: 18
+    isVirtual: 0
+  - name: Thumb_03
+    index: 19
+    isVirtual: 0
+  - name: IK WeaponBoneLeft
+    index: 20
+    isVirtual: 0
+  - name: SM_Chr_Attach_Bombsuit_Wrist_01
+    index: 21
+    isVirtual: 0
+  - name: Clavicle_R
+    index: 22
+    isVirtual: 0
+  - name: Shoulder_R
+    index: 23
+    isVirtual: 0
+  - name: Elbow_R
+    index: 24
+    isVirtual: 0
+  - name: Hand_R
+    index: 25
+    isVirtual: 0
+  - name: Finger_01 1
+    index: 26
+    isVirtual: 0
+  - name: Finger_02 1
+    index: 27
+    isVirtual: 0
+  - name: Finger_03 1
+    index: 28
+    isVirtual: 0
+  - name: Finger_04 1
+    index: 29
+    isVirtual: 0
+  - name: IndexFinger_01 1
+    index: 30
+    isVirtual: 0
+  - name: IndexFinger_02 1
+    index: 31
+    isVirtual: 0
+  - name: IndexFinger_03 1
+    index: 32
+    isVirtual: 0
+  - name: IndexFinger_04 1
+    index: 33
+    isVirtual: 0
+  - name: Thumb_01 1
+    index: 34
+    isVirtual: 0
+  - name: Thumb_02 1
+    index: 35
+    isVirtual: 0
+  - name: Thumb_03 1
+    index: 36
+    isVirtual: 0
+  - name: IK WeaponBoneRight
+    index: 37
+    isVirtual: 0
+  - name: Neck
+    index: 38
+    isVirtual: 0
+  - name: Head
+    index: 39
+    isVirtual: 0
+  - name: Eyebrows
+    index: 40
+    isVirtual: 0
+  - name: Eyes
+    index: 41
+    isVirtual: 0
+  - name: Jaw
+    index: 42
+    isVirtual: 0
+  - name: SM_Chr_Attach_Bombsuit_Helmet_01
+    index: 43
+    isVirtual: 0
+  - name: SM_Chr_Attach_Bombsuit_Helmet_01_Visor
+    index: 44
+    isVirtual: 0
+  - name: IK WeaponBone
+    index: 45
+    isVirtual: 0
+  - name: IK RightHand
+    index: 46
+    isVirtual: 0
+  - name: IK LeftHand
+    index: 47
+    isVirtual: 0
+  - name: IK RightElbow
+    index: 48
+    isVirtual: 0
+  - name: IK LeftElbow
+    index: 49
+    isVirtual: 0
+  - name: Camera
+    index: 50
+    isVirtual: 0
+  - name: SM_Chr_Attach_Pouch_09
+    index: 51
+    isVirtual: 0
+  - name: UpperLeg_L
+    index: 52
+    isVirtual: 0
+  - name: LowerLeg_L
+    index: 53
+    isVirtual: 0
+  - name: Ankle_L
+    index: 54
+    isVirtual: 0
+  - name: Ball_L
+    index: 55
+    isVirtual: 0
+  - name: Toes_L
+    index: 56
+    isVirtual: 0
+  - name: UpperLeg_R
+    index: 57
+    isVirtual: 0
+  - name: LowerLeg_R
+    index: 58
+    isVirtual: 0
+  - name: Ankle_R
+    index: 59
+    isVirtual: 0
+  - name: Ball_R
+    index: 60
+    isVirtual: 0
+  - name: Toes_R
+    index: 61
+    isVirtual: 0
+  - name: WeaponBone
+    index: 62
+    isVirtual: 0
+  - name: WeaponBoneAdditive
+    index: 63
+    isVirtual: 0
+  - name: IK RightFoot
+    index: 64
+    isVirtual: 0
+  - name: IK LeftFoot
+    index: 65
+    isVirtual: 0
+  - name: IK RightKnee
+    index: 66
+    isVirtual: 0
+  - name: IK LeftKnee
+    index: 67
+    isVirtual: 0
+  rigElementChains:
+  - chainName: PelvisChain
+    elementChain:
+    - name: Hips
+      index: 1
+      isVirtual: 0
+    isStandalone: 0
+  - chainName: SpineRootChain
+    elementChain:
+    - name: Spine_01
+      index: 2
+      isVirtual: 0
+    isStandalone: 0
+  - chainName: RightHandChain
+    elementChain:
+    - name: Hand_R
+      index: 25
+      isVirtual: 0
+    isStandalone: 0
+  - chainName: LeftHandChain
+    elementChain:
+    - name: Hand_L
+      index: 8
+      isVirtual: 0
+    isStandalone: 0
+  - chainName: RightFootChain
+    elementChain:
+    - name: Root
+      index: 0
+      isVirtual: 0
+    isStandalone: 0
+  - chainName: LeftFootChain
+    elementChain:
+    - name: Root
+      index: 0
+      isVirtual: 0
+    isStandalone: 0
+  rigCurves:
+  - Overlay
+  - WeaponBoneWeight
+  - MaskAttachHand
+  rigDepths: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c000000090000000a0000000b0000000c000000090000000a0000000b000000090000000800000005000000060000000700000008000000090000000a0000000b0000000c000000090000000a0000000b0000000c000000090000000a0000000b00000009000000050000000600000007000000070000000700000007000000080000000700000008000000080000000800000008000000070000000300000002000000030000000400000005000000060000000200000003000000040000000500000006000000010000000100000001000000010000000100000001000000
