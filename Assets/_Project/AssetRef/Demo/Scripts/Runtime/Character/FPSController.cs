@@ -39,6 +39,7 @@ namespace Demo.Scripts.Runtime.Character
         [SerializeField] private Camera mainCam;
         [SerializeField] private float positionRange = 5f;
         //[SerializeField] AudioListener playerAudioListener;
+        public List<Weapon> weapons = new List<Weapon>();
 
         public override void OnNetworkSpawn()
         {
@@ -550,6 +551,12 @@ namespace Demo.Scripts.Runtime.Character
         [ServerRpc]
         private void StartAimingServerRpc()
         {
+            StartAimingClientRpc();
+        }
+
+        [ClientRpc]
+        private void StartAimingClientRpc()
+        {
             if (_instantiatedWeapons.Count == 0) return;
 
             // Execute aim logic on the server
@@ -562,6 +569,12 @@ namespace Demo.Scripts.Runtime.Character
 
         [ServerRpc]
         private void StopAimingServerRpc()
+        {
+            StopAimingClientRpc();
+        }
+
+        [ClientRpc]
+        private void StopAimingClientRpc()
         {
             if (_instantiatedWeapons.Count == 0) return;
 
