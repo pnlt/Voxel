@@ -15,7 +15,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     }
     
     [SerializeField] private float maxHealth;
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>();
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public bool getShot;
 
     private void Awake()
@@ -28,7 +28,16 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         PlayerHealthUpdate?.Invoke(currentHealth.Value);
     }
 
-    public void TakeDamage(float damage, BodyPart position)
+    /*public override void OnNetworkSpawn()
+    {
+        currentHealth.OnValueChanged += (float prevVal, float newVal) =>
+        {
+            currentHealth.Value = newVal;
+        };
+    }*/
+
+    [ServerRpc]
+    private void TakeDamageServerRpc(float damage, BodyPart position)
     {
         Debug.Log("Rpc");
         getShot = true;
@@ -43,6 +52,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 break;
             case BodyPart.BODY:
                 currentHealth.Value -= damage * Random.Range(1f, 2f);
+                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
                 if (IsHost)
                     Debug.Log("Server: body");
                 else if (IsClient)
@@ -88,9 +98,8 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     }
 
     public static event Action<float> PlayerHealthUpdate;
-    // public void TakeDamage(float damage, BodyPart position)
-    // {
-    //     Debug.Log("Damage");
-    //     TakeDamageServerRpc(damage, position);
-    // }
+    public void TakeDamage(float damage, BodyPart position)
+    {
+        TakeDamageServerRpc(damage, position);
+    }
 }
