@@ -1,9 +1,11 @@
 using System;
 using Cysharp.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
-public class PlayerSpirit : MonoBehaviour, IHealthSystem
+public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 {
     public enum BodyPart 
     {
@@ -13,38 +15,51 @@ public class PlayerSpirit : MonoBehaviour, IHealthSystem
     }
     
     [SerializeField] private float maxHealth;
-    private float currentHealth;
+    private NetworkVariable<float> currentHealth = new NetworkVariable<float>();
     public bool getShot;
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+        currentHealth.Value = maxHealth;
     }
 
     private void Start()
     {
-        PlayerHealthUpdate?.Invoke(currentHealth);
+        PlayerHealthUpdate?.Invoke(currentHealth.Value);
     }
 
     public void TakeDamage(float damage, BodyPart position)
     {
+        Debug.Log("Rpc");
         getShot = true;
         switch (position)
         {
             case BodyPart.HEAD:
-                currentHealth -= maxHealth;
+                currentHealth.Value -= maxHealth;
+                if (IsHost)
+                    Debug.Log("Server: Head");
+                else if (IsClient)
+                    Debug.Log("Client: Head");
                 break;
             case BodyPart.BODY:
-                currentHealth -= damage;
+                currentHealth.Value -= damage * Random.Range(1f, 2f);
+                if (IsHost)
+                    Debug.Log("Server: body");
+                else if (IsClient)
+                    Debug.Log("Client: body");
                 break;
             case BodyPart.LOWER_BODY:
-                currentHealth -= damage * .5f;
+                currentHealth.Value -= damage * .5f;
+                if (IsHost)
+                    Debug.Log("Server: lowerbody");
+                else if (IsClient)
+                    Debug.Log("Client: lowerbody");
                 break;
         }
 
-        GetShotEffect(.2f);
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        PlayerHealthUpdate?.Invoke(currentHealth);
+         GetShotEffect(.2f);
+         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
+         PlayerHealthUpdate?.Invoke(currentHealth.Value);
     }
 
     private async void GetShotEffect(float duration)
@@ -73,4 +88,9 @@ public class PlayerSpirit : MonoBehaviour, IHealthSystem
     }
 
     public static event Action<float> PlayerHealthUpdate;
+    // public void TakeDamage(float damage, BodyPart position)
+    // {
+    //     Debug.Log("Damage");
+    //     TakeDamageServerRpc(damage, position);
+    // }
 }
