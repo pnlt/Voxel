@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using KINEMATION.FPSAnimationFramework.Runtime.Camera;
 using KINEMATION.FPSAnimationFramework.Runtime.Core;
 using KINEMATION.FPSAnimationFramework.Runtime.Playables;
@@ -15,6 +15,7 @@ using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
 using Random = UnityEngine.Random;
+using UnityEditor.Timeline.Actions;
 
 namespace Demo.Scripts.Runtime.Item
 {
@@ -83,18 +84,21 @@ namespace Demo.Scripts.Runtime.Item
         private static readonly int CurveEquip = Animator.StringToHash("CurveEquip");
         private static readonly int CurveUnequip = Animator.StringToHash("CurveUnequip");
 
+        private int amount = 0;
+        private bool IsReloading = false;
         private void Awake()
         {
             SetUp(data.replacement);
             projectileParent = GameObject.Find("Projectiles");
             casingParent = GameObject.Find("Casings");
-            
+            amount = data.amount;
         }
 
         private void OnActionEnded()
         {
             if (_fpsController == null) return;
             _fpsController.ResetActionState();
+             
         }
 
         protected void UpdateTargetFOV(bool isAiming)
@@ -245,6 +249,8 @@ namespace Demo.Scripts.Runtime.Item
             {
                 _weaponAnimator.Rebind();
                 _weaponAnimator.Play("Reload", 0);
+                IsReloading = true;
+
             }
 
             if (_fpsCameraController != null)
@@ -253,9 +259,16 @@ namespace Demo.Scripts.Runtime.Item
             }
             
             Invoke(nameof(OnActionEnded), reloadClip.clip.length * 0.85f);
+            Invoke(nameof(ReloadFinish), reloadClip.clip.length * 0.85f);
 
             OnFireReleased();
             return true;
+        }
+
+        private void ReloadFinish ()
+        {
+            amount = data.amount;
+            IsReloading = false;
         }
 
         public override bool OnGrenadeThrow()
@@ -350,6 +363,18 @@ namespace Demo.Scripts.Runtime.Item
         
         private void OnFire()
         {
+            if (IsReloading)
+            {
+                return;
+            }
+
+            // Kiểm tra nếu hết đạn thì thay đạn
+            if (amount <= 0)
+            {
+                OnReload();
+                return;
+            }
+
             if (_weaponAnimator != null)
             {
                 _weaponAnimator.Play("Fire", 0, 0f);
@@ -376,21 +401,28 @@ namespace Demo.Scripts.Runtime.Item
             if (_recoilAnimation.fireMode == FireMode.Semi)
             {
                 Invoke(nameof(OnFireReleased), 60f / fireRate);
+                amount -= 1;
                 return;
             }
             
             if (_recoilAnimation.fireMode == FireMode.Burst)
             {
                 _bursts--;
-                
+                amount -= 1;
+
                 if (_bursts == 0)
                 {
                     OnFireReleased();
                     return;
                 }
             }
-            
-            Invoke(nameof(OnFire), 60f / fireRate);
+
+            if (_recoilAnimation.fireMode == FireMode.Auto)
+            {
+                Invoke(nameof(OnFire), 60f / fireRate);
+                amount -= 1;
+                return;
+            }
         }
         
         public override void OnCycleScope()
