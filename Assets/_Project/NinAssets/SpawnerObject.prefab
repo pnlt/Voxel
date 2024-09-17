@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1263102719
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 4085248982
+  InScenePlacedSourceGlobalObjectIdHash: 1263102719
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -70,3 +70,4 @@ MonoBehaviour:
   muzzle: {fileID: 0}
   projectileParent: {fileID: 0}
   weapon: {fileID: 0}
+  spawnedProjectiles: []

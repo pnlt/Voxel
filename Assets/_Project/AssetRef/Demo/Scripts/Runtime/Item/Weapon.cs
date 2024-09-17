@@ -1,5 +1,3 @@
-// Designed by KINEMATION, 2024.
-
 using System;
 using KINEMATION.FPSAnimationFramework.Runtime.Camera;
 using KINEMATION.FPSAnimationFramework.Runtime.Core;
@@ -14,8 +12,6 @@ using Akila.FPSFramework;
 using Demo.Scripts.Runtime.Character;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
-using Unity.Netcode;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
 using Random = UnityEngine.Random;
@@ -33,7 +29,6 @@ namespace Demo.Scripts.Runtime.Item
         [SerializeField] [Range(0f, 120f)] private float fieldOfView = 90f;
         [SerializeField] private FPSAnimationAsset reloadClip;
         [SerializeField] private FPSCameraAnimation cameraReloadAnimation;
-        
         [SerializeField] private FPSAnimationAsset grenadeClip;
         [SerializeField] private FPSCameraAnimation cameraGrenadeAnimation;
 
@@ -53,34 +48,26 @@ namespace Demo.Scripts.Runtime.Item
         [SerializeField] private RecoilPatternSettings recoilPatternSettings;
         [SerializeField] private FPSCameraShake cameraShake;
         [Min(0f)] [SerializeField] private float fireRate;
-
         [SerializeField] private bool supportsAuto;
         [SerializeField] private bool supportsBurst;
         [SerializeField] private int burstLength;
 
         [Header("Attachments")] 
-        
         [SerializeField]
         private AttachmentGroup<BaseAttachment> barrelAttachments = new AttachmentGroup<BaseAttachment>();
-        
         [SerializeField]
         private AttachmentGroup<BaseAttachment> gripAttachments = new AttachmentGroup<BaseAttachment>();
-        
         [SerializeField]
         private List<AttachmentGroup<ScopeAttachment>> scopeGroups = new List<AttachmentGroup<ScopeAttachment>>();
         
-        
         //~ Controller references
-
-        private FPSController _fpsController;
+        public FPSController _fpsController;
         private Animator _controllerAnimator;
         private UserInputController _userInputController;
         private IPlayablesController _playablesController;
         private FPSCameraController _fpsCameraController;
-        
         private FPSAnimator _fpsAnimator;
         private FPSAnimatorEntity _fpsAnimatorEntity;
-
         private RecoilAnimation _recoilAnimation;
         private RecoilPattern _recoilPattern;
         
@@ -103,7 +90,6 @@ namespace Demo.Scripts.Runtime.Item
             casingParent = GameObject.Find("Casings");
             
         }
-
 
         private void OnActionEnded()
         {
@@ -290,46 +276,29 @@ namespace Demo.Scripts.Runtime.Item
             return true;
         }
 
-        /*private FPSProjectiles CreateProjectile(FPSProjectiles projectile, Weapon source, Transform muzzle, Vector3 direction, float speed, float range, Transform parent)
-        {
-            FPSProjectiles newProjectile = Instantiate(projectile, muzzle.position, muzzle.rotation, parent);
-            newProjectile.direction = direction;
-
-            if (_fpsController && _fpsController.characterController)
-                newProjectile.shooterVelocity = _fpsController.characterController.velocity;
-
-            newProjectile.speed = speed;
-            newProjectile.source = source;
-            newProjectile.range = range;
-            newProjectile.useAutoScaling = source.data.tracerRounds;
-            newProjectile.scaleMultipler = source.data.projectileSize;
-            newProjectile.damageRangeCurve = source.data.damageRangeCurve;
-
-            Projectiles?.Add(newProjectile);
-            return newProjectile;
-        }*/
-
-        public static void UpdateHits(Weapon weapon, FPSProjectiles projectile, GameObject defaultDecal, Ray ray, RaycastHit hit, float damage, float damageRangeFactor, Vector3Direction decalDir)
+        public static void UpdateHits(Weapon weapon, FPSProjectiles projectile, GameObject defaultDecal, Ray ray, RaycastHit hit, int damageValue, float damageRangeFactor, Vector3Direction decalDir)
         {
              //What happens if the bullet hits something  
              if (hit.transform.TryGetComponent(out IgnoreHitDetection ignoreHitDetection)) return;
 
              FPSHitInfo hitInfo = new FPSHitInfo(projectile, ray, hit);
              GameObject currentDecal = defaultDecal;
-             Debug.Log(hit.collider.gameObject.name);
-
-             switch (hit.collider.gameObject.tag)
-             {
-                 case "Head":
-                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.HEAD);
-                     break;
-                 case "Body":
-                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.BODY);
-                     break;
-                 case "Lower body":
-                     weapon._fpsController.PlayerSpirit.TakeDamage(damage, PlayerSpirit.BodyPart.LOWER_BODY);
-                     break;
-             }
+            
+            if (hit.transform.GetComponentInParent<PlayerSpirit>())
+            {
+                switch (hit.collider.gameObject.tag)
+                {
+                    case "Head":
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.HEAD);
+                        break;
+                    case "Body":
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.BODY);
+                        break;
+                    case "Lower body":
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.LOWER_BODY);
+                        break;
+                }
+            }
 
              if (hit.transform.TryGetComponent(out CustomDecal customDecal))
              {
@@ -355,6 +324,7 @@ namespace Demo.Scripts.Runtime.Item
                  hit.rigidbody.AddForceAtPosition(-hit.normal * force, hit.point, ForceMode.Impulse);
              }
         }
+       
 
         private void ThrowCasing()
         {
@@ -376,12 +346,6 @@ namespace Demo.Scripts.Runtime.Item
             newCasing.transform.Rotate(Random.Range(-data.casingRotationFactor, data.casingRotationFactor),Random.Range(-data.casingRotationFactor, data.casingRotationFactor), Random.Range(-data.casingRotationFactor, data.casingRotationFactor));
             Destroy(newCasing.gameObject, 5);
             
-        }
-
-        private void Fire()
-        {
-            if (muzzle)
-                Debug.Log("Firing from " + muzzle.name);
         }
         
         private void OnFire()
@@ -405,13 +369,6 @@ namespace Demo.Scripts.Runtime.Item
                 _recoilPattern.OnFireStart();
             }
             
-            //Create projectile
-            /*if (data.projectile) {
-                FPSProjectiles projectile;
-                projectile = CreateProjectile(data.projectile, this, muzzle, muzzle.forward, data.muzzleVelocity, data.range, projectileParent.transform);
-                var projectileOnNetwork = projectile.GetComponent<NetworkObject>();
-                projectileOnNetwork.Spawn(true);
-            }*/
             Spawner.Instance.SpawnBullet();
 
             ThrowCasing();

@@ -3015,7 +3015,7 @@ GameObject:
   - component: {fileID: 5371366404605264636}
   m_Layer: 0
   m_Name: FPSGenericPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3184,7 +3184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 491693261
+  GlobalObjectIdHash: 777461556
   InScenePlacedSourceGlobalObjectIdHash: 777461556
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -3205,10 +3205,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81d0c9cae953fca4ab9737e1caf87cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isHit: 0
   settings: {fileID: 11400000, guid: 0c5416fd02cdf824988cdb6a02d47482, type: 2}
   maxSlot: 3
   mainCam: {fileID: 7948552440595140459}
   positionRange: 5
+  weapons: []
+  smoothFactor: 15
   force: 1
   dropLocation: {fileID: 7538684955012767876}
 --- !u!114 &7948552439935663166
@@ -3424,6 +3427,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  currentHealth:
+    m_InternalValue: 0
   getShot: 0
 --- !u!1 &7151070337432973102
 GameObject:
@@ -4135,12 +4140,12 @@ MonoBehaviour:
   m_RequiresColorTexture: 0
   m_Version: 2
   m_TaaSettings:
-    quality: 3
-    frameInfluence: 0.1
-    jitterScale: 1
-    mipBias: 0
-    varianceClampScale: 0.9
-    contrastAdaptiveSharpening: 0
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!114 &7948552440595140458
 MonoBehaviour:
   m_ObjectHideFlags: 0
