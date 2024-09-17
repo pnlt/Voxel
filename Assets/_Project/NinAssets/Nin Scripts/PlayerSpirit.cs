@@ -14,62 +14,15 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         LOWER_BODY
     }
     
-    [SerializeField] private float maxHealth;
-    private NetworkVariable<float> currentHealth = new NetworkVariable<float>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public int maxHealth = 100;
+    public NetworkVariable<int> currentHealth = new NetworkVariable<int>();
+    private bool m_IsPlayerDead => currentHealth.Value == 0;
+    public Action<PlayerSpirit> OnDie;
     public bool getShot;
 
     private void Awake()
     {
-        currentHealth.Value = maxHealth;
-    }
-
-    private void Start()
-    {
-        PlayerHealthUpdate?.Invoke(currentHealth.Value);
-    }
-
-    /*public override void OnNetworkSpawn()
-    {
-        currentHealth.OnValueChanged += (float prevVal, float newVal) =>
-        {
-            currentHealth.Value = newVal;
-        };
-    }*/
-
-    [ServerRpc]
-    private void TakeDamageServerRpc(float damage, BodyPart position)
-    {
-        Debug.Log("Rpc");
-        getShot = true;
-        switch (position)
-        {
-            case BodyPart.HEAD:
-                currentHealth.Value -= maxHealth;
-                if (IsHost)
-                    Debug.Log("Server: Head");
-                else if (IsClient)
-                    Debug.Log("Client: Head");
-                break;
-            case BodyPart.BODY:
-                currentHealth.Value -= damage * Random.Range(1f, 2f);
-                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
-                if (IsHost)
-                    Debug.Log("Server: body");
-                else if (IsClient)
-                    Debug.Log("Client: body");
-                break;
-            case BodyPart.LOWER_BODY:
-                currentHealth.Value -= damage * .5f;
-                if (IsHost)
-                    Debug.Log("Server: lowerbody");
-                else if (IsClient)
-                    Debug.Log("Client: lowerbody");
-                break;
-        }
-
-         GetShotEffect(.2f);
-         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
-         PlayerHealthUpdate?.Invoke(currentHealth.Value);
+      currentHealth.Value = maxHealth;
     }
 
     private async void GetShotEffect(float duration)
@@ -97,9 +50,34 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         transform.eulerAngles = playerRotation;
     }
 
-    public static event Action<float> PlayerHealthUpdate;
-    public void TakeDamage(float damage, BodyPart position)
+    public void TakeDamage(int damageValue, BodyPart position)
     {
-        TakeDamageServerRpc(damage, position);
+        if (getShot) return;
+        getShot = true;
+        
+        if (m_IsPlayerDead)
+        {
+            return;
+        }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value - damageValue, 0, maxHealth);
+        if (m_IsPlayerDead)
+        {
+            OnDie?.Invoke(this);
+        }
+        
+        switch (position)
+        {
+            case BodyPart.HEAD:
+                currentHealth.Value -= maxHealth;
+                break;
+            case BodyPart.BODY:
+                currentHealth.Value -= damageValue * Random.Range(1, 2);
+                break;
+            case BodyPart.LOWER_BODY:
+                currentHealth.Value -= damageValue * 1;
+                break;
+        }
+         GetShotEffect(.2f);
+        
     }
 }

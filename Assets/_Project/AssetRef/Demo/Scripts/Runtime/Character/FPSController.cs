@@ -29,17 +29,30 @@ namespace Demo.Scripts.Runtime.Character
     }
 
     [RequireComponent(typeof(CharacterController), typeof(FPSMovement))]
-    public class FPSController : NetworkBehaviour 
+    public class FPSController : NetworkBehaviour
     {
+        public bool isHit = false;
         //~ Legacy Controller Interface
         [SerializeField] private FPSControllerSettings settings;
         [SerializeField] private int maxSlot;
-
         [Header("Refs")] 
         [SerializeField] private Camera mainCam;
         [SerializeField] private float positionRange = 5f;
         //[SerializeField] AudioListener playerAudioListener;
         public List<Weapon> weapons = new List<Weapon>();
+        
+        // NetworkVariables for position and rotation
+        private NetworkVariable<Vector3> netPosition = new NetworkVariable<Vector3>();
+        private NetworkVariable<Quaternion> netRotation = new NetworkVariable<Quaternion>();
+        private NetworkVariable<Quaternion> netCameraRotation = new NetworkVariable<Quaternion>();
+
+        // Local variables to store smooth values
+        private Vector3 smoothPosition;
+        private Quaternion smoothRotation;
+        private Quaternion smoothCameraRotation;
+
+        // Smoothing factor
+        public float smoothFactor = 15f;
 
         public override void OnNetworkSpawn()
         {
@@ -298,46 +311,73 @@ namespace Demo.Scripts.Runtime.Character
             transform.rotation = Quaternion.Euler(0f, yaw, 0f);
         }
         
-        private void UpdateLookInput()
-        {
-            if (!IsOwner) return;
-            
-            float scale = _userInput.GetValue<float>(_sensitivityMultiplierPropertyIndex);
-            
-            float deltaMouseX = _lookDeltaInput.x * settings.sensitivity * scale;
-            float deltaMouseY = -_lookDeltaInput.y * settings.sensitivity * scale;
-            
-            _playerInput.y += deltaMouseY;
-            _playerInput.x += deltaMouseX;
-            
-            if (_recoilPattern != null)
-            {
-                _playerInput += _recoilPattern.GetRecoilDelta();
-                deltaMouseX += _recoilPattern.GetRecoilDelta().x;
-            }
-            
-            float proneWeight = _animator.GetFloat(_proneWeightHash);
-            Vector2 pitchClamp = Vector2.Lerp(new Vector2(-90f, 90f), new Vector2(-30, 0f), proneWeight);
+      //  private void UpdateLookInput()
+      //  {
+      //      if (!IsOwner) return;
+      //      
+      //      float scale = _userInput.GetValue<float>(_sensitivityMultiplierPropertyIndex);
+      //      
+      //      float deltaMouseX = _lookDeltaInput.x * settings.sensitivity * scale;
+      //      float deltaMouseY = -_lookDeltaInput.y * settings.sensitivity * scale;
+      //      
+      //      _playerInput.y += deltaMouseY;
+      //      _playerInput.x += deltaMouseX;
+      //      
+      //      if (_recoilPattern != null)
+      //      {
+      //          _playerInput += _recoilPattern.GetRecoilDelta();
+      //          deltaMouseX += _recoilPattern.GetRecoilDelta().x;
+      //      }
+      //      
+      //      float proneWeight = _animator.GetFloat(_proneWeightHash);
+      //      Vector2 pitchClamp = Vector2.Lerp(new Vector2(-90f, 90f), new Vector2(-30, 0f), proneWeight);
 
-            _playerInput.y = Mathf.Clamp(_playerInput.y, pitchClamp.x, pitchClamp.y);
-            
-            transform.rotation *= Quaternion.Euler(0f, deltaMouseX, 0f);
-            
-            // Update camera rotation (pitch) for up/down movement
-            mainCam.transform.localRotation = Quaternion.Euler(_playerInput.y, 0f, 0f);
-            
-            _userInput.SetValue(FPSANames.MouseDeltaInput, new Vector4(deltaMouseX, deltaMouseY));
-            _userInput.SetValue(FPSANames.MouseInput, new Vector4(_playerInput.x, _playerInput.y));
-            
-            // Send updated position and rotation to the server
-            //UpdatePlayerLookServerRpc(transform.position, transform.rotation);
-            
-            // Send updated yaw (body rotation) to the server
-            UpdatePlayerLookServerRpc(transform.position, transform.rotation.eulerAngles.y);
+      //      _playerInput.y = Mathf.Clamp(_playerInput.y, pitchClamp.x, pitchClamp.y);
+      //      
+      //      transform.rotation *= Quaternion.Euler(0f, deltaMouseX, 0f);
+      //      
+      //      // Update camera rotation (pitch) for up/down movement
+      //      mainCam.transform.localRotation = Quaternion.Euler(_playerInput.y, 0f, 0f);
+      //      
+      //      _userInput.SetValue(FPSANames.MouseDeltaInput, new Vector4(deltaMouseX, deltaMouseY));
+      //      _userInput.SetValue(FPSANames.MouseInput, new Vector4(_playerInput.x, _playerInput.y));
+      //      
+      //      // Send updated yaw (body rotation) to the server
+      //      UpdatePlayerLookServerRpc(transform.position, transform.rotation.eulerAngles.y);
 
-            // Send updated pitch (camera rotation) to the server
-            UpdatePlayerPitchServerRpc(_playerInput.y);
-        }
+      //      // Send updated pitch (camera rotation) to the server
+      //      UpdatePlayerPitchServerRpc(_playerInput.y);
+      //  }
+      
+      private void UpdateLookInput()
+      {
+          if (!IsOwner) return;
+            
+          float scale = _userInput.GetValue<float>(_sensitivityMultiplierPropertyIndex);
+            
+          float deltaMouseX = _lookDeltaInput.x * settings.sensitivity * scale;
+          float deltaMouseY = -_lookDeltaInput.y * settings.sensitivity * scale;
+            
+          _playerInput.y += deltaMouseY;
+          _playerInput.x += deltaMouseX;
+            
+          if (_recoilPattern != null)
+          {
+              _playerInput += _recoilPattern.GetRecoilDelta();
+              deltaMouseX += _recoilPattern.GetRecoilDelta().x;
+          }
+            
+          float proneWeight = _animator.GetFloat(_proneWeightHash);
+          Vector2 pitchClamp = Vector2.Lerp(new Vector2(-90f, 90f), new Vector2(-30, 0f), proneWeight);
+
+          _playerInput.y = Mathf.Clamp(_playerInput.y, pitchClamp.x, pitchClamp.y);
+            
+          transform.rotation *= Quaternion.Euler(0f, deltaMouseX, 0f);
+          mainCam.transform.localRotation = Quaternion.Euler(_playerInput.y, 0f, 0f);
+            
+          _userInput.SetValue(FPSANames.MouseDeltaInput, new Vector4(deltaMouseX, deltaMouseY));
+          _userInput.SetValue(FPSANames.MouseInput, new Vector4(_playerInput.x, _playerInput.y));
+      }
         
         [ServerRpc]
         private void UpdatePlayerPitchServerRpc(float pitch)
@@ -362,13 +402,56 @@ namespace Demo.Scripts.Runtime.Character
             _userInput.SetValue(FPSANames.PlayablesWeight, playablesWeight);
         }
 
-        private void Update()
-        {
-            //if (!IsOwner) return;
-            Time.timeScale = settings.timeScale;
-            UpdateLookInput();
-            OnMovementUpdated();
-        }
+       // private void Update()
+       // {
+       //     //if (!IsOwner) return;
+       //     Time.timeScale = settings.timeScale;
+       //     UpdateLookInput();
+       //     OnMovementUpdated();
+       // }
+       private void Update()
+       {
+           if (IsOwner)
+           {
+               UpdateOwnerMovement();
+           }
+           else
+           {
+               UpdateClientMovement();
+           }
+           Time.timeScale = settings.timeScale;
+           OnMovementUpdated();
+       }
+       private void UpdateOwnerMovement()
+       {
+           // Instead of directly applying rotations, update the NetworkVariables
+           UpdateLookInput();
+           
+           // Send updated values to the server
+           UpdateTransformServerRpc(transform.position, transform.rotation, mainCam.transform.localRotation);
+
+       }
+       
+       [ServerRpc]
+       private void UpdateTransformServerRpc(Vector3 position, Quaternion rotation, Quaternion cameraRotation)
+       {
+           // Update NetworkVariables on the server
+           netPosition.Value = position;
+           netRotation.Value = rotation;
+           netCameraRotation.Value = cameraRotation;
+       }
+       private void UpdateClientMovement()
+       {
+           // Smoothly interpolate position and rotation for non-owner clients
+           smoothPosition = Vector3.Lerp(smoothPosition, netPosition.Value, Time.deltaTime * smoothFactor);
+           smoothRotation = Quaternion.Slerp(smoothRotation, netRotation.Value, Time.deltaTime * smoothFactor);
+           smoothCameraRotation = Quaternion.Slerp(smoothCameraRotation, netCameraRotation.Value, Time.deltaTime * smoothFactor);
+
+           // Apply smoothed values
+           transform.position = smoothPosition;
+           transform.rotation = smoothRotation;
+           mainCam.transform.localRotation = smoothCameraRotation;
+       }
 
         #region Equipment Handler
 
