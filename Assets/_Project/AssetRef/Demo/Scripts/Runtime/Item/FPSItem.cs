@@ -25,6 +25,7 @@ namespace Demo.Scripts.Runtime.Item
         [SerializeField] protected IkMotionLayerSettings unEquipMotion;
 
         private FPSPickable replacement;
+        //public WeaponData data;
         
         public List<FPSProjectiles> Projectiles { get; set; } = new List<FPSProjectiles>();
         

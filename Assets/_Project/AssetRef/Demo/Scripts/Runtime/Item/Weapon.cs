@@ -101,7 +101,9 @@ namespace Demo.Scripts.Runtime.Item
             SetUp(data.replacement);
             projectileParent = GameObject.Find("Projectiles");
             casingParent = GameObject.Find("Casings");
+            
         }
+
 
         private void OnActionEnded()
         {
@@ -152,6 +154,7 @@ namespace Demo.Scripts.Runtime.Item
         {
             if (parent == null) return;
             
+            Spawner.Instance.SetData(data, muzzle, this);
             _fpsAnimator = parent.GetComponent<FPSAnimator>();
             _fpsAnimatorEntity = GetComponent<FPSAnimatorEntity>();
             
@@ -287,7 +290,7 @@ namespace Demo.Scripts.Runtime.Item
             return true;
         }
 
-        private FPSProjectiles CreateProjectile(FPSProjectiles projectile, Weapon source, Transform muzzle, Vector3 direction, float speed, float range, Transform parent)
+        /*private FPSProjectiles CreateProjectile(FPSProjectiles projectile, Weapon source, Transform muzzle, Vector3 direction, float speed, float range, Transform parent)
         {
             FPSProjectiles newProjectile = Instantiate(projectile, muzzle.position, muzzle.rotation, parent);
             newProjectile.direction = direction;
@@ -304,7 +307,7 @@ namespace Demo.Scripts.Runtime.Item
 
             Projectiles?.Add(newProjectile);
             return newProjectile;
-        }
+        }*/
 
         public static void UpdateHits(Weapon weapon, FPSProjectiles projectile, GameObject defaultDecal, Ray ray, RaycastHit hit, float damage, float damageRangeFactor, Vector3Direction decalDir)
         {
@@ -313,6 +316,7 @@ namespace Demo.Scripts.Runtime.Item
 
              FPSHitInfo hitInfo = new FPSHitInfo(projectile, ray, hit);
              GameObject currentDecal = defaultDecal;
+             Debug.Log(hit.collider.gameObject.name);
 
              switch (hit.collider.gameObject.tag)
              {
@@ -402,12 +406,13 @@ namespace Demo.Scripts.Runtime.Item
             }
             
             //Create projectile
-            if (data.projectile) {
+            /*if (data.projectile) {
                 FPSProjectiles projectile;
                 projectile = CreateProjectile(data.projectile, this, muzzle, muzzle.forward, data.muzzleVelocity, data.range, projectileParent.transform);
                 var projectileOnNetwork = projectile.GetComponent<NetworkObject>();
                 projectileOnNetwork.Spawn(true);
-            }
+            }*/
+            Spawner.Instance.SpawnBullet();
 
             ThrowCasing();
 
