@@ -5,5 +5,5 @@ using UnityEngine;
 
 public interface IHealthSystem
 {
-    void TakeDamage(float damage, PlayerSpirit.BodyPart position);
+    void TakeDamage(int damageValue, PlayerSpirit.BodyPart position);
 }

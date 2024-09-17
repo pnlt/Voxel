@@ -9,7 +9,7 @@ namespace InfimaGames.LowPolyShooterPack.Legacy
 {
 	public class Projectile1 : MonoBehaviour
 	{
-		public float damage;
+		public int damage;
 
 		[Range(5, 100)]
 		[Tooltip("After how long time should the bullet prefab be destroyed?")]
