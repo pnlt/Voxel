@@ -12,8 +12,8 @@ public class HealthSystem : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerSpirit.PlayerHealthUpdate += PlayerHealthUpdateCurrentHealthTxt;
-        PlayerSpirit.PlayerHealthUpdate += UpdateHealthVisual;
+        //PlayerSpirit.PlayerHealthUpdate += PlayerHealthUpdateCurrentHealthTxt;
+        //PlayerSpirit.PlayerHealthUpdate += UpdateHealthVisual;
     }
 
     private void PlayerHealthUpdateCurrentHealthTxt(float currentHealth)
@@ -28,7 +28,7 @@ public class HealthSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        PlayerSpirit.PlayerHealthUpdate -= PlayerHealthUpdateCurrentHealthTxt;
-        PlayerSpirit.PlayerHealthUpdate -= UpdateHealthVisual;
+        //PlayerSpirit.PlayerHealthUpdate -= PlayerHealthUpdateCurrentHealthTxt;
+        //PlayerSpirit.PlayerHealthUpdate -= UpdateHealthVisual;
     }
 }

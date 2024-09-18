@@ -1,10 +1,13 @@
-﻿using Akila.FPSFramework;
+﻿using System.Collections;
+using Akila.FPSFramework;
+using Demo.Scripts.Runtime.Character;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
 {
     //[AddComponentMenu("Akila/FPS Framework/Weapons/Projectile")]
-    public class FPSProjectiles : MonoBehaviour
+    public class FPSProjectiles : NetworkBehaviour
     {
         [Header("Base Settings")]
         public LayerMask hittableLayers = -1;
@@ -15,6 +18,7 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         public float force = 10;
         public int lifeTime = 5;
         public GameObject defaultDecal;
+        public Spawner parent;
 
         [Header("Additional Settings")]
         public bool destroyOnImpact = false;
@@ -30,7 +34,7 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         public Demo.Scripts.Runtime.Item.Weapon source { get; set; }
         public Vector3 direction { get; set; }
         public Vector3 shooterVelocity { get; set; }
-        private float damage;
+        private int damage;
         private float damageRangeFactor;
         private float maxVelocity;
         private Vector3 velocity;
@@ -44,22 +48,110 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         private Transform Effects;
 
         private Vector3 startPosition;
+        
+        private bool isInitialized = false;
+        private bool isSourceSet = false;
 
-        /// <summary>
-        /// returns true if the shooter has any component with the interface ICharacterController implemented
-        /// </summary>
-        /*public bool isLocallyMine
+        public override void OnNetworkSpawn()
         {
-            get
+            base.OnNetworkSpawn();
+            if (IsServer)
             {
-                return source?.characterManager?.character != null;
+                //Initialize();
+                StartCoroutine(WaitForSourceAndInitialize());
             }
-        }*/
-
-        private void Awake()
-        {
-            Setup();
+            else
+            {
+                //InitializeServerRpc();
+                WaitForSourceAndInitializeServerRpc();
+            }
         }
+        
+        [ServerRpc(RequireOwnership = false)]
+        private void WaitForSourceAndInitializeServerRpc()
+        {
+            StartCoroutine(WaitForSourceAndInitialize());
+        }
+
+        private IEnumerator WaitForSourceAndInitialize()
+        {
+            float timeout = 5f; // 5 seconds timeout
+            float elapsedTime = 0f;
+
+            while (!isSourceSet && elapsedTime < timeout)
+            {
+                if (source != null && source.data != null)
+                {
+                    isSourceSet = true;
+                    Initialize();
+                    break;
+                }
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!isSourceSet)
+            {
+                InitializeWithDefaults();
+            }
+
+            InitializeClientRpc();
+        }
+        
+
+        [ClientRpc]
+        private void InitializeClientRpc()
+        {
+            if (!IsServer)
+            {
+                Initialize();
+            }
+        }
+        
+        private void Initialize()
+        {
+            if (isInitialized) return;
+
+            Setup();
+            
+            if (rb == null)
+            {
+                return;
+            }
+            
+            Vector3 sourceVelocity = useSourceVelocity ? shooterVelocity : Vector3.zero;
+            velocity = (transform.forward + direction) * (speed / 2) + sourceVelocity;
+            rb.AddForce(velocity, ForceMode.VelocityChange);
+            
+            if (source != null && source.data != null)
+            {
+                maxVelocity = source.data.muzzleVelocity;
+            }
+            else
+            {
+                maxVelocity = speed; // Fallback value
+            }
+
+            maxVelocity = source.data.muzzleVelocity;
+
+            if (transform.Find("Effects"))
+            {
+                Effects = transform.Find("Effects");
+                Effects.parent = null;
+            }
+
+            DestroyBulletServerRpc();
+            isInitialized = true;
+        }
+        
+        private void InitializeWithDefaults()
+        {
+            // Initialize with default values when source data is unavailable
+            maxVelocity = speed;
+            // Set other necessary default values here
+            isInitialized = true;
+        }
+
 
         public virtual void Setup()
         {
@@ -80,39 +172,48 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             explosive = GetComponent<Explosive>();
         }
 
-        private void Start()
-        {
-            Vector3 sorceVelocity = useSourceVelocity ? shooterVelocity : Vector3.zero;
-
-            velocity = (transform.forward + direction) * (speed / 2) + sorceVelocity;
-
-            rb.AddForce(velocity, ForceMode.VelocityChange);
-
-            maxVelocity = source.data.muzzleVelocity;
-
-            if (transform.Find("Effects"))
-            {
-                Effects = transform.Find("Effects");
-                Effects.parent = null;
-                Destroy(gameObject, lifeTime + 1);
-            }
-            //if (explosive) explosive.source = source.Actor;
-
-            Destroy(gameObject, lifeTime);
-        }
 
         private void Update()
         {
+            if(!IsOwner) return;
+            if (!IsSpawned || !isInitialized)
+            {
+                return;
+            }
+            
             float distanceFromStartPosition = Vector3.Distance(startPosition, transform.position);
             distanceFromStartPosition = Mathf.Clamp(distanceFromStartPosition, 0, range);
 
             damageRangeFactor = (rb.velocity.magnitude / maxVelocity) * (damageRangeCurve.Evaluate(distanceFromStartPosition / range));
-            damage = (!source.data.alwaysApplyFire ? source.data.damage / source.data.shotCount : source.data.damage) * damageRangeFactor;
+            damage = (int)((!source.data.alwaysApplyFire ? source.data.damage / source.data.shotCount : source.data.damage) * damageRangeFactor);
 
+
+            RaycastServerRpc();
+            
+
+            if (Effects)
+            {
+                Effects.position = transform.position;
+            }
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void RaycastServerRpc()
+        {
+            if (!IsSpawned || !isInitialized)
+            {
+                return;
+            }
+
+            PerformRaycast();
+            
+        }
+
+        private void PerformRaycast()
+        {
             Ray ray = new Ray(previousPosition, -(previousPosition - transform.position));
             RaycastHit[] hits = Physics.RaycastAll(ray, Vector3.Distance(transform.position, previousPosition));
-            if (penetrationStrenght <= 0) Destroy(gameObject);
-
+            if (penetrationStrenght <= 0) DestroyBulletServerRpc();
 
             for (int i = 0; i < hits.Length; i++)
             {
@@ -123,30 +224,38 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
                 }
             }
             
-
             if (useAutoScaling)
             {
-                float distance = Vector3.Distance(transform.position, Camera.main.transform.position);
-                float scale = (distance / scaleMultipler) * (Camera.main.fieldOfView / 360);
+                float scale = (5 / scaleMultipler) * 1 / 6;
 
                 transform.localScale = Vector3.one * scale;
                 if (trail) trail.widthMultiplier = scale;
             }
-
+            
             if (!useAutoScaling)
             {
                 transform.localScale = Vector3.one * scaleMultipler;
             }
-
-            if (Effects)
-            {
-                Effects.position = transform.position;
-            }
+            
         }
-
+        [ServerRpc(RequireOwnership = false)]
+        private void DestroyBulletServerRpc()
+        {
+            if (IsServer)
+                Destroy(gameObject, lifeTime);
+        }
+        
         private void FixedUpdate()
         {
-            rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
+            if (!IsSpawned || !isInitialized)
+            {
+                return;
+            }
+
+            if (rb != null)
+            {
+                rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
+            }
         }
 
         private void LateUpdate()
@@ -158,14 +267,13 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         {
             //stop if object has ignore component
             if (hit.transform.TryGetComponent(out IgnoreHitDetection ignore)) return;
-            
-            Debug.Log("Hit: " + hit.transform.name);
             OnHit(hit);
 
             if (explosive)
             {
                 explosive.Explode(true);
-                Destroy(gameObject);
+                //Destroy(gameObject);
+                DestroyBulletServerRpc();
                 return;
             }
 
@@ -181,7 +289,7 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             if (penetrationStrenght > 0)
                 Demo.Scripts.Runtime.Item.Weapon.UpdateHits(source, this, defaultDecal, ray, hit, damage, damageRangeFactor, decalDirection);
             else
-                Destroy(gameObject);
+                DestroyBulletServerRpc();
         }
 
         public virtual void OnHit(RaycastHit hit)

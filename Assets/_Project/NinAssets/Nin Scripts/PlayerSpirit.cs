@@ -1,9 +1,13 @@
 using System;
 using Cysharp.Threading.Tasks;
+using TMPro;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-public class PlayerSpirit : MonoBehaviour, IHealthSystem
+public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 {
     public enum BodyPart 
     {
@@ -12,39 +16,45 @@ public class PlayerSpirit : MonoBehaviour, IHealthSystem
         LOWER_BODY
     }
     
-    [SerializeField] private float maxHealth;
-    private float currentHealth;
+    public int maxHealth = 100;
+    public NetworkVariable<int> currentHealth = new NetworkVariable<int>();
+    private bool m_IsPlayerDead => currentHealth.Value == 0;
+    public Action<PlayerSpirit> OnDie;
     public bool getShot;
+
+    public GameObject playerUI;
+    public TextMeshProUGUI currentHealthTxt;
+    public Image healthVisual;
+
+    public TextMeshProUGUI currentAmountTxt;
+    public TextMeshProUGUI totalAmountTxt;
 
     private void Awake()
     {
-        currentHealth = maxHealth;
+      currentHealth.Value = maxHealth;
     }
 
     private void Start()
     {
-        PlayerHealthUpdate?.Invoke(currentHealth);
+        currentHealth.OnValueChanged += OnHealthChanged;
+        if (IsOwner)
+        {
+            playerUI.SetActive(true);
+        }
+        else
+        {
+            playerUI.SetActive(false);
+        }
     }
 
-    public void TakeDamage(float damage, BodyPart position)
+    private void OnDestroy()
     {
-        getShot = true;
-        switch (position)
-        {
-            case BodyPart.HEAD:
-                currentHealth -= maxHealth;
-                break;
-            case BodyPart.BODY:
-                currentHealth -= damage;
-                break;
-            case BodyPart.LOWER_BODY:
-                currentHealth -= damage * .5f;
-                break;
-        }
+        currentHealth.OnValueChanged -= OnHealthChanged;
+    }
 
-        GetShotEffect(.2f);
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        PlayerHealthUpdate?.Invoke(currentHealth);
+    private void OnHealthChanged(int previousHealth, int newHealth)
+    {
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(newHealth);
     }
 
     private async void GetShotEffect(float duration)
@@ -72,5 +82,60 @@ public class PlayerSpirit : MonoBehaviour, IHealthSystem
         transform.eulerAngles = playerRotation;
     }
 
-    public static event Action<float> PlayerHealthUpdate;
+    public void TakeDamage(int damageValue, BodyPart position)
+    {
+        if (getShot) return;
+        getShot = true;
+        
+        if (m_IsPlayerDead)
+        {
+            return;
+        }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value - damageValue, 0, maxHealth);
+        if (m_IsPlayerDead)
+        {
+            OnDie?.Invoke(this);
+        }
+        
+        switch (position)
+        {
+            case BodyPart.HEAD:
+                currentHealth.Value -= maxHealth;
+                break;
+            case BodyPart.BODY:
+                currentHealth.Value -= damageValue * Random.Range(1, 2);
+                break;
+            case BodyPart.LOWER_BODY:
+                currentHealth.Value -= damageValue * 1;
+                break;
+        }
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
+        GetShotEffect(.2f);
+        
+    }
+
+    [ClientRpc]
+    public void PlayerHealthUpdateCurrentHealthTxtClientRpc(int currentHealth)
+    {
+        if (IsOwner)
+        {
+            currentHealthTxt.text = currentHealth.ToString();
+            UpdateHealthVisual(currentHealth);
+        }
+    }
+
+    private void UpdateHealthVisual(float currentHealth)
+    {
+        healthVisual.fillAmount = currentHealth / 100f;
+    }
+
+    public void UpdateCurrentAmountTxt(int currentAmount)
+    {
+        currentAmountTxt.text = currentAmount.ToString();
+    }
+
+    public void UpdateTotalAmountTxt(int totalAmount)
+    {
+        totalAmountTxt.text = totalAmount.ToString();
+    }
 }
