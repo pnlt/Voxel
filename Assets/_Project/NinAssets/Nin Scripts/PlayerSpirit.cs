@@ -1,8 +1,10 @@
 using System;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class PlayerSpirit : NetworkBehaviour, IHealthSystem
@@ -20,9 +22,39 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     public Action<PlayerSpirit> OnDie;
     public bool getShot;
 
+    public GameObject playerUI;
+    public TextMeshProUGUI currentHealthTxt;
+    public Image healthVisual;
+
+    public TextMeshProUGUI currentAmountTxt;
+    public TextMeshProUGUI totalAmountTxt;
+
     private void Awake()
     {
       currentHealth.Value = maxHealth;
+    }
+
+    private void Start()
+    {
+        currentHealth.OnValueChanged += OnHealthChanged;
+        if (IsOwner)
+        {
+            playerUI.SetActive(true);
+        }
+        else
+        {
+            playerUI.SetActive(false);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        currentHealth.OnValueChanged -= OnHealthChanged;
+    }
+
+    private void OnHealthChanged(int previousHealth, int newHealth)
+    {
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(newHealth);
     }
 
     private async void GetShotEffect(float duration)
@@ -77,7 +109,33 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 currentHealth.Value -= damageValue * 1;
                 break;
         }
-         GetShotEffect(.2f);
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
+        GetShotEffect(.2f);
         
+    }
+
+    [ClientRpc]
+    public void PlayerHealthUpdateCurrentHealthTxtClientRpc(int currentHealth)
+    {
+        if (IsOwner)
+        {
+            currentHealthTxt.text = currentHealth.ToString();
+            UpdateHealthVisual(currentHealth);
+        }
+    }
+
+    private void UpdateHealthVisual(float currentHealth)
+    {
+        healthVisual.fillAmount = currentHealth / 100f;
+    }
+
+    public void UpdateCurrentAmountTxt(int currentAmount)
+    {
+        currentAmountTxt.text = currentAmount.ToString();
+    }
+
+    public void UpdateTotalAmountTxt(int totalAmount)
+    {
+        totalAmountTxt.text = totalAmount.ToString();
     }
 }

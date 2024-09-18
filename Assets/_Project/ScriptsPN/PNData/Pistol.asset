@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   Name: Pistol
-  replacement: {fileID: 3865220725522667762, guid: 52432e8a3ca3949479257613472dcacc, type: 3}
+  replacement: {fileID: 3865220725522667762, guid: 52432e8a3ca3949479257613472dcacc,
+    type: 3}
   canves: {fileID: 0}
   shootingMechanism: 0
   casingDirection: 2
   hittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectile: {fileID: 2534988501845755173, guid: 6c8564a6d33058c488dd47c26b90bb10, type: 3}
+  projectile: {fileID: 2534988501845755173, guid: 6c8564a6d33058c488dd47c26b90bb10,
+    type: 3}
   casing: {fileID: 0}
   defaultDecal: {fileID: 0}
   decalDirection: 0
@@ -69,6 +71,7 @@ MonoBehaviour:
   magazineCapacity: 30
   reserve: 0
   automaticReload: 1
+  amount: 15
   aimSpeed: 10
   aimFieldOfView: 50
   aimWeaponFieldOfview: 40

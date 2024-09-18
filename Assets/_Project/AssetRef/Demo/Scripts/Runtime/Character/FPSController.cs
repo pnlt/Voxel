@@ -706,6 +706,7 @@ namespace Demo.Scripts.Runtime.Character
 
         public void OnLean(InputValue value)
         {
+            if (!IsOwner) return;
             _userInput.SetValue(FPSANames.LeanInput, value.Get<float>() * settings.leanAngle);
             PlayTransitionMotion(settings.leanMotion);
         }

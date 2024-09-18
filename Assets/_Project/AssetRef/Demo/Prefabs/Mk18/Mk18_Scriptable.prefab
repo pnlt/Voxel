@@ -799,7 +799,6 @@ MonoBehaviour:
   projectileParent: {fileID: 0}
   casingParent: {fileID: 0}
   casingEjectionPoint: {fileID: 5080922092089185311}
-  spawner: {fileID: 7081363051274338743, guid: f02df0d6f415d7349b045973eebec67d, type: 3}
   fireClip: {fileID: 0}
   recoilData: {fileID: 11400000, guid: 7638b99fbca1b914b9f2e6441b21a466, type: 2}
   recoilPatternSettings: {fileID: 11400000, guid: f828d6d423a942146839c52d2c7bdb1f,
@@ -825,6 +824,7 @@ MonoBehaviour:
     - {fileID: 6021082444482178404}
   - attachments:
     - {fileID: 238443097295942336}
+  _fpsController: {fileID: 0}
 --- !u!95 &2151158701131182720
 Animator:
   serializedVersion: 5
@@ -858,6 +858,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Muzzle Smoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 6631087918505611698, guid: 21087934ed795984d9839b7810e03269,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9147318147387243118, guid: 21087934ed795984d9839b7810e03269,
         type: 3}
