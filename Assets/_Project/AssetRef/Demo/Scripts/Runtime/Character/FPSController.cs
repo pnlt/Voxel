@@ -694,9 +694,10 @@ namespace Demo.Scripts.Runtime.Character
             EquipWeaponClientRpc(newWeaponIndex, state);
         }
 
-        public void OnChangeWeapon()
+        public void OnChangeWeapon(InputValue value)
         {
-            ChangeWeapon(FPSItem.WeaponState.NONE);
+            if (value.Get<Vector2>() != Vector2.zero)
+                ChangeWeapon(FPSItem.WeaponState.NONE);
         }
 
         public void OnLook(InputValue value)

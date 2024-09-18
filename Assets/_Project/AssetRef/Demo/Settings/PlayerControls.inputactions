@@ -34,12 +34,12 @@
                 },
                 {
                     "name": "ChangeWeapon",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "ccf0f95a-2fe7-4ee9-9082-2fd1a83a0dc9",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Look",
@@ -214,7 +214,7 @@
                 {
                     "name": "",
                     "id": "e62386ed-e227-432d-be94-2b77010693cc",
-                    "path": "<Keyboard>/f",
+                    "path": "<Mouse>/scroll",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
