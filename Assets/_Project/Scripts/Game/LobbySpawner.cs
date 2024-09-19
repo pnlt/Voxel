@@ -19,7 +19,12 @@ namespace Game
         {
             LobbyEvents.OnLobbyUpdated -= OnLobbyUpdated;
         }
-        
+
+        private void Start()
+        {
+            OnLobbyUpdated();
+        }
+
         private void OnLobbyUpdated()
         {
             List<LobbyPlayerData> playerDatas = GameLobbyManager.Instance.GetPlayers();

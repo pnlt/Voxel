@@ -1,7 +1,10 @@
 using System;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class PlayerSpirit : NetworkBehaviour, IHealthSystem
@@ -14,34 +17,45 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     }
     
     public int maxHealth = 100;
-    public NetworkVariable<float> currentHealth = new NetworkVariable<float>();
+    public NetworkVariable<int> currentHealth = new NetworkVariable<int>();
     private bool m_IsPlayerDead => currentHealth.Value == 0;
     public Action<PlayerSpirit> OnDie;
-    public Action<float> playerHealthUpdate;
     public bool getShot;
-    
-    public override void OnNetworkSpawn()
+
+    public GameObject playerUI;
+    public TextMeshProUGUI currentHealthTxt;
+    public Image healthVisual;
+
+    public TextMeshProUGUI currentAmountTxt;
+    public TextMeshProUGUI totalAmountTxt;
+
+    private void Awake()
     {
-        base.OnNetworkSpawn();
-        if (IsServer)
-        {
-            currentHealth.Value = maxHealth;
-        }
-        
-        // if (IsOwner)
-        //     UpdateVisualClientRpc();
+      currentHealth.Value = maxHealth;
     }
 
-    // private void Start()
-    // {
-    //     UpdateVisualServerRpc();
-    // }
+    private void Start()
+    {
+        currentHealth.OnValueChanged += OnHealthChanged;
+        if (IsOwner)
+        {
+            playerUI.SetActive(true);
+        }
+        else
+        {
+            playerUI.SetActive(false);
+        }
+    }
 
-    // [ClientRpc]
-    // private void UpdateVisualClientRpc()
-    // {
-    //     playerHealthUpdate.Invoke(currentHealth.Value);
-    // }
+    private void OnDestroy()
+    {
+        currentHealth.OnValueChanged -= OnHealthChanged;
+    }
+
+    private void OnHealthChanged(int previousHealth, int newHealth)
+    {
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(newHealth);
+    }
 
     private async void GetShotEffect(float duration)
     {
@@ -77,6 +91,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         {
             return;
         }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value - damageValue, 0, maxHealth);
         if (m_IsPlayerDead)
         {
             OnDie?.Invoke(this);
@@ -88,18 +103,39 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 currentHealth.Value -= maxHealth;
                 break;
             case BodyPart.BODY:
-                currentHealth.Value -= damageValue * Random.Range(1, 3);
-                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
+                currentHealth.Value -= damageValue * Random.Range(1, 2);
                 break;
             case BodyPart.LOWER_BODY:
                 currentHealth.Value -= damageValue * 1;
-                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
                 break;
         }
-
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
-        // if (IsOwner)
-        //     UpdateVisualClientRpc();
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
         GetShotEffect(.2f);
+        
+    }
+
+    [ClientRpc]
+    public void PlayerHealthUpdateCurrentHealthTxtClientRpc(int currentHealth)
+    {
+        if (IsOwner)
+        {
+            currentHealthTxt.text = currentHealth.ToString();
+            UpdateHealthVisual(currentHealth);
+        }
+    }
+
+    private void UpdateHealthVisual(float currentHealth)
+    {
+        healthVisual.fillAmount = currentHealth / 100f;
+    }
+
+    public void UpdateCurrentAmountTxt(int currentAmount)
+    {
+        currentAmountTxt.text = currentAmount.ToString();
+    }
+
+    public void UpdateTotalAmountTxt(int totalAmount)
+    {
+        totalAmountTxt.text = totalAmount.ToString();
     }
 }

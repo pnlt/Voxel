@@ -71,6 +71,7 @@ MonoBehaviour:
   magazineCapacity: 30
   reserve: 0
   automaticReload: 1
+  amount: 15
   aimSpeed: 10
   aimFieldOfView: 50
   aimWeaponFieldOfview: 40

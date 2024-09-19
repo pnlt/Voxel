@@ -157,7 +157,7 @@ namespace InfimaGames.LowPolyShooterPack
                 weapon.magazineCapacity =
                     EditorGUILayout.IntField(new GUIContent(" Magazine Capacity"), weapon.magazineCapacity);
                 weapon.reserve = EditorGUILayout.IntField(new GUIContent(" Reserve"), weapon.reserve);
-
+                weapon.amount = EditorGUILayout.IntField(new GUIContent(" Amount"), weapon.amount);
                 weapon.automaticReload = EditorGUILayout.Toggle(" Automatic Reload", weapon.automaticReload);
 
                 EditorGUILayout.Space();

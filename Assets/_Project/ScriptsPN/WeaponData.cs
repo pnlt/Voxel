@@ -59,7 +59,7 @@ namespace InfimaGames.LowPolyShooterPack
         public int reserve = 0;
         public bool automaticReload = true;
 
-        
+        public int amount = 0;
         //public Weapon.ReloadType reloadMethod;
         /*public float reloadTime = 1.6f;
         public float emptyReloadTime = 2.13f;

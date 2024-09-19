@@ -86,7 +86,7 @@ namespace InfimaGames.LowPolyShooterPack
             else if (inventory.Items.Count >= inventory.MaxSlot)
             {
                 FPSItem oldItem = inventory.GetActiveItem();
-                inventory.ReplaceItem(oldItem, item);
+                //inventory.ReplaceItem(oldItem, item);
             }
         
             /*if (newItem.TryGetComponent<Firearm>(out Firearm firearm))
