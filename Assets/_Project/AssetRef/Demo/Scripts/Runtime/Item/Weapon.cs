@@ -85,12 +85,34 @@ namespace Demo.Scripts.Runtime.Item
 
         private int amount = 0;
         private bool IsReloading = false;
+
+        private PlayerSpirit playerSpirit;
         private void Awake()
         {
             SetUp(data.replacement);
             projectileParent = GameObject.Find("Projectiles");
             casingParent = GameObject.Find("Casings");
             amount = data.amount;
+        }
+
+        private void Start()
+        {
+            playerSpirit = gameObject.gameObject.GetComponentInParent<PlayerSpirit>();
+            UpdateUIAmount();
+        }
+
+        private void Update()
+        {
+            if (playerSpirit == null)
+            {
+                playerSpirit = gameObject.gameObject.GetComponentInParent<PlayerSpirit>();
+            }
+        }
+
+        private void UpdateUIAmount()
+        {
+            playerSpirit.UpdateCurrentAmountTxt(amount);
+            playerSpirit.UpdateTotalAmountTxt(data.amount);
         }
 
         private void OnActionEnded()
@@ -267,6 +289,7 @@ namespace Demo.Scripts.Runtime.Item
         private void ReloadFinish ()
         {
             amount = data.amount;
+            UpdateUIAmount();
             IsReloading = false;
         }
 
@@ -374,6 +397,8 @@ namespace Demo.Scripts.Runtime.Item
                 return;
             }
 
+            Spawner.Instance.SetData(data, muzzle, this);
+
             if (_weaponAnimator != null)
             {
                 _weaponAnimator.Play("Fire", 0, 0f);
@@ -401,6 +426,7 @@ namespace Demo.Scripts.Runtime.Item
             {
                 Invoke(nameof(OnFireReleased), 60f / fireRate);
                 amount -= 1;
+                UpdateUIAmount();
                 return;
             }
             
@@ -408,6 +434,7 @@ namespace Demo.Scripts.Runtime.Item
             {
                 _bursts--;
                 amount -= 1;
+                UpdateUIAmount();
 
                 if (_bursts == 0)
                 {
@@ -420,6 +447,7 @@ namespace Demo.Scripts.Runtime.Item
             {
                 Invoke(nameof(OnFire), 60f / fireRate);
                 amount -= 1;
+                UpdateUIAmount();
                 return;
             }
         }
