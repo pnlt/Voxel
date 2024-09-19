@@ -21,7 +21,7 @@ public class ShootPlayer : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.N))
         {
             var partGetHurt = random[Random.Range(1, 4)];
-            health.TakeDamage(50, partGetHurt);
+            //health.TakeDamage(50, partGetHurt);
         }
     }
 }

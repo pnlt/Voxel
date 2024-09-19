@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Pistol
   m_EditorClassIdentifier: 
   Name: Pistol
-  replacement: {fileID: 3865220725522667762, guid: 52432e8a3ca3949479257613472dcacc, type: 3}
+  replacement: {fileID: 3865220725522667762, guid: 52432e8a3ca3949479257613472dcacc,
+    type: 3}
   canves: {fileID: 0}
   shootingMechanism: 0
   casingDirection: 2
   hittableLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  projectile: {fileID: 2534988501845755173, guid: 6c8564a6d33058c488dd47c26b90bb10, type: 3}
+  projectile: {fileID: 2534988501845755173, guid: 6c8564a6d33058c488dd47c26b90bb10,
+    type: 3}
   casing: {fileID: 0}
   defaultDecal: {fileID: 0}
   decalDirection: 0
@@ -35,7 +37,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 1.0014038
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -44,7 +46,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0
+      value: 0.0009422302
       inSlope: 0
       outSlope: 0
       tangentMode: 0

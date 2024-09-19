@@ -5,4 +5,6 @@ using UnityEngine;
 public class Voxel : ScriptableObject
 {
     [SerializeField] private Effect effect;
+
+    public Effect Effect => this.effect;
 }

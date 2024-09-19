@@ -9,11 +9,12 @@ public class HealthSystem : MonoBehaviour
 {
     public TextMeshProUGUI currentHealth;
     public Image healthVisual;
+    private PlayerSpirit _playerSpirit;
 
     private void OnEnable()
     {
-        //PlayerSpirit.PlayerHealthUpdate += PlayerHealthUpdateCurrentHealthTxt;
-        //PlayerSpirit.PlayerHealthUpdate += UpdateHealthVisual;
+        _playerSpirit.playerHealthUpdate += PlayerHealthUpdateCurrentHealthTxt;
+        _playerSpirit.playerHealthUpdate += UpdateHealthVisual;
     }
 
     private void PlayerHealthUpdateCurrentHealthTxt(float currentHealth)
@@ -28,7 +29,7 @@ public class HealthSystem : MonoBehaviour
 
     private void OnDisable()
     {
-        //PlayerSpirit.PlayerHealthUpdate -= PlayerHealthUpdateCurrentHealthTxt;
-        //PlayerSpirit.PlayerHealthUpdate -= UpdateHealthVisual;
+        _playerSpirit.playerHealthUpdate -= PlayerHealthUpdateCurrentHealthTxt;
+        _playerSpirit.playerHealthUpdate -= UpdateHealthVisual;
     }
 }

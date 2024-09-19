@@ -402,13 +402,6 @@ namespace Demo.Scripts.Runtime.Character
             _userInput.SetValue(FPSANames.PlayablesWeight, playablesWeight);
         }
 
-       // private void Update()
-       // {
-       //     //if (!IsOwner) return;
-       //     Time.timeScale = settings.timeScale;
-       //     UpdateLookInput();
-       //     OnMovementUpdated();
-       // }
        private void Update()
        {
            if (IsOwner)

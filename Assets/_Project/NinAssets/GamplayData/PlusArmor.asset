@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PlusArmor
   m_EditorClassIdentifier: 
   effectVisualization: {fileID: 0}
-  name: 
-  cooldownTimeEffect: 0
-  description: 
-  armorPlus: 0
+  name: Plus armor
+  cooldownTimeEffect: 5
+  description: Plus the armor for people having effect
+  _inCooldown: 0
+  armorPlus: 60

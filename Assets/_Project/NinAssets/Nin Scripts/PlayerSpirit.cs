@@ -2,7 +2,6 @@ using System;
 using Cysharp.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using Random = UnityEngine.Random;
 
 public class PlayerSpirit : NetworkBehaviour, IHealthSystem
@@ -15,15 +14,34 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     }
     
     public int maxHealth = 100;
-    public NetworkVariable<int> currentHealth = new NetworkVariable<int>();
+    public NetworkVariable<float> currentHealth = new NetworkVariable<float>();
     private bool m_IsPlayerDead => currentHealth.Value == 0;
     public Action<PlayerSpirit> OnDie;
+    public Action<float> playerHealthUpdate;
     public bool getShot;
-
-    private void Awake()
+    
+    public override void OnNetworkSpawn()
     {
-      currentHealth.Value = maxHealth;
+        base.OnNetworkSpawn();
+        if (IsServer)
+        {
+            currentHealth.Value = maxHealth;
+        }
+        
+        // if (IsOwner)
+        //     UpdateVisualClientRpc();
     }
+
+    // private void Start()
+    // {
+    //     UpdateVisualServerRpc();
+    // }
+
+    // [ClientRpc]
+    // private void UpdateVisualClientRpc()
+    // {
+    //     playerHealthUpdate.Invoke(currentHealth.Value);
+    // }
 
     private async void GetShotEffect(float duration)
     {
@@ -59,7 +77,6 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         {
             return;
         }
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value - damageValue, 0, maxHealth);
         if (m_IsPlayerDead)
         {
             OnDie?.Invoke(this);
@@ -71,13 +88,18 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 currentHealth.Value -= maxHealth;
                 break;
             case BodyPart.BODY:
-                currentHealth.Value -= damageValue * Random.Range(1, 2);
+                currentHealth.Value -= damageValue * Random.Range(1, 3);
+                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
                 break;
             case BodyPart.LOWER_BODY:
                 currentHealth.Value -= damageValue * 1;
+                currentHealth.Value = Mathf.RoundToInt(currentHealth.Value);
                 break;
         }
-         GetShotEffect(.2f);
-        
+
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
+        // if (IsOwner)
+        //     UpdateVisualClientRpc();
+        GetShotEffect(.2f);
     }
 }

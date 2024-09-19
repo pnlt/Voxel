@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Akila.FPSFramework;
@@ -12,6 +13,7 @@ namespace InfimaGames.LowPolyShooterPack
         ITEM
     }
 
+    [Serializable]
     public class FPSPickable : MonoBehaviour, IInteractable
     {
         

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: FAL
   m_EditorClassIdentifier: 
   Name: FAL
-  replacement: {fileID: 3576419132155497198, guid: 20cbf6e1a639276438824c20d7c85a56, type: 3}
+  replacement: {fileID: 3576419132155497198, guid: 20cbf6e1a639276438824c20d7c85a56,
+    type: 3}
   canves: {fileID: 0}
   shootingMechanism: 0
   casingDirection: 2

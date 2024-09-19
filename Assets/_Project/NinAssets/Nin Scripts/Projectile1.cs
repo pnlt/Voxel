@@ -156,7 +156,7 @@ namespace InfimaGames.LowPolyShooterPack.Legacy
 				//Damage target
 				if (collision.gameObject.TryGetComponent<IHealthSystem>(out var health))
 				{ 
-					health.TakeDamage(damage, PlayerSpirit.BodyPart.HEAD);
+					//health.TakeDamage(damage, PlayerSpirit.BodyPart.HEAD);
 				}
 				Debug.Log("alo");
 				

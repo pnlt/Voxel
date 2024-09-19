@@ -30,6 +30,7 @@ public class Spawner : NetworkBehaviour
     public void SpawnBullet()
     {
         if (!IsOwner) return;
+        Debug.Log("Spawn bullet");
         SpawnBulletServerRpc();
     }
 
@@ -48,16 +49,16 @@ public class Spawner : NetworkBehaviour
     
         if (networkObject.IsSpawned)
         {
-            AssignDataServerRpc(networkObject, direction, speed, range);
+            AssignDataClientRpc(networkObject, direction, speed, range);
         }
         
     }
 
-    [ServerRpc]
-    private void AssignDataServerRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
-    {
-        AssignDataClientRpc(projectileReference, direction, speed, range);   
-    }
+    // [ServerRpc]
+    // private void AssignDataServerRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
+    // {
+    //     AssignDataClientRpc(projectileReference, direction, speed, range);   
+    // }
 
     [ClientRpc]
     private void AssignDataClientRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
@@ -69,6 +70,7 @@ public class Spawner : NetworkBehaviour
         newProjectile.speed = speed;
         newProjectile.source = weapon;
         newProjectile.range = range;
+        newProjectile.data = data;
         newProjectile.useAutoScaling = weapon.data.tracerRounds;
         newProjectile.scaleMultipler = weapon.data.projectileSize;
         newProjectile.damageRangeCurve = weapon.data.damageRangeCurve;
