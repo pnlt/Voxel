@@ -21,7 +21,9 @@ namespace Game
         private LobbyPlayerData _localLobbyPlayerData;
         private LobbyData _lobbyData;
         private int _maxNumberOfPlayers = 4;
-        private bool _inGame = false;
+        private bool _inGame;
+        private bool _wasDisconnected;
+        private string _previousRelayCode;
 
         public bool IsHost => _localLobbyPlayerData.Id == LobbyManager.Instance.GetHostId();
         private void OnEnable()
@@ -32,6 +34,11 @@ namespace Game
         private void OnDisable()
         {
             LobbyEvents.OnLobbyUpdated -= OnLobbyUpdated;
+        }
+        
+        public async Task<bool> HasActivelobbies()
+        {
+            return await LobbyManager.Instance.HasActiveLobbies();
         }
 
         public string GetLobbyCode()
@@ -92,9 +99,20 @@ namespace Game
             }
 
             if (_lobbyData.RelayJoinCode != default && !_inGame)
-            {
-               await JoinRelayServer(_lobbyData.RelayJoinCode);
-               SceneManager.LoadSceneAsync(_lobbyData.SceneName);
+            { 
+                if (_wasDisconnected)
+                {
+                   if (_lobbyData.RelayJoinCode != _previousRelayCode)
+                   {
+                       await JoinRelayServer(_lobbyData.RelayJoinCode);
+                       SceneManager.LoadSceneAsync(_lobbyData.SceneName);
+                   }
+                }
+                else
+                {
+                       await JoinRelayServer(_lobbyData.RelayJoinCode);
+                       SceneManager.LoadSceneAsync(_lobbyData.SceneName);
+                }
             }
         }
 
@@ -133,6 +151,8 @@ namespace Game
             
             string allocationId = RelayManager.Instance.GetAllocationId();
             string connectionData = RelayManager.Instance.GetConnectionData();
+            
+            _localLobbyPlayerData.IsReady = false;
             await LobbyManager.Instance.UpdatePlayerData(_localLobbyPlayerData.Id, _localLobbyPlayerData.Serialize(), allocationId, connectionData);
 
             SceneManager.LoadSceneAsync(_lobbyData.SceneName);
@@ -144,8 +164,34 @@ namespace Game
             await RelayManager.Instance.JoinRelay(relayJoinCode);
             string allocationId = RelayManager.Instance.GetAllocationId();
             string connectionData = RelayManager.Instance.GetConnectionData();
+            _localLobbyPlayerData.IsReady = false;
             await LobbyManager.Instance.UpdatePlayerData(_localLobbyPlayerData.Id, _localLobbyPlayerData.Serialize(), allocationId, connectionData);
             return true;
+        }
+
+        public async Task<bool> RejoinGame()
+        {
+            return await LobbyManager.Instance.RejoinLobby();
+        }
+
+        public async Task<bool> LeaveAllLobby()
+        {
+            return await LobbyManager.Instance.LeaveAllLobby();
+        }
+
+        public async void GoBackToLobby(bool wasDisconnected)
+        {
+            _inGame = false;
+            _wasDisconnected = wasDisconnected;
+            
+            if (_wasDisconnected)
+            {
+                _previousRelayCode = _lobbyData.RelayJoinCode;
+            }
+            
+            _localLobbyPlayerData.IsReady = false;
+            await LobbyManager.Instance.UpdatePlayerData(_localLobbyPlayerData.Id, _localLobbyPlayerData.Serialize());
+            SceneManager.LoadSceneAsync("Lobby");
         }
     }
 }

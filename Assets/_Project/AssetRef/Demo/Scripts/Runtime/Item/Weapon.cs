@@ -15,7 +15,6 @@ using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
 using Random = UnityEngine.Random;
-using UnityEditor.Timeline.Actions;
 
 namespace Demo.Scripts.Runtime.Item
 {

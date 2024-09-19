@@ -16,6 +16,19 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
         private Lobby _lobby;
         private Coroutine _heartbeatCoroutine;
         private Coroutine _refreshLobbyCoroutine;
+
+        private List<string> _joinedLobbiesId;
+        
+        public async Task<bool> HasActiveLobbies()
+        {
+            _joinedLobbiesId = await LobbyService.Instance.GetJoinedLobbiesAsync();
+            if (_joinedLobbiesId.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
         
         public string GetLobbyCode()
         {
@@ -41,7 +54,7 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
                 return false;
             }
             
-            Debug.Log($"Lobby created with lobby id {_lobby.Id}");
+            //Debug.Log($"Lobby created with lobby id {_lobby.Id}");
 
             _heartbeatCoroutine = StartCoroutine(HeartbeatLobbyCoroutine(_lobby.Id, 6f));
             _refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_lobby.Id, 1f));
@@ -54,7 +67,7 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
         {
             while (true)
             {
-                Debug.Log("Heartbeat");
+                //Debug.Log("Heartbeat");
                 LobbyService.Instance.SendHeartbeatPingAsync(lobbyId);
                 yield return new WaitForSecondsRealtime(waitTimeSeconds);
             }
@@ -183,6 +196,38 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
         public string GetHostId()
         {
             return _lobby.HostId;
+        }
+
+        public async Task<bool> RejoinLobby()
+        {
+            try
+            {
+                _lobby = await LobbyService.Instance.ReconnectToLobbyAsync(_joinedLobbiesId[0]);
+                LobbyEvents.OnLobbyUpdated(_lobby);
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }
+            _refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_joinedLobbiesId[0], 1f));
+            return true;
+        }
+
+        public async Task<bool> LeaveAllLobby()
+        {
+            string playerId = AuthenticationService.Instance.PlayerId;
+            foreach (string lobbyId in _joinedLobbiesId)
+            {
+                try
+                {
+                    await LobbyService.Instance.RemovePlayerAsync(lobbyId, playerId);
+                } catch (System.Exception)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
