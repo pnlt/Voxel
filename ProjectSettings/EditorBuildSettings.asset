@@ -29,7 +29,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/Maps/YellowScene.unity
     guid: 40b0b97a5e59eb54fb705ca2b795be47
-  - enabled: 1
-    path: Assets/FPS Framework/Scenes/Demo.unity
-    guid: c604dab8d2dc4c845b0a15de6b5edc02
   m_configObjects: {}
