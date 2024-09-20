@@ -827,8 +827,9 @@ MonoBehaviour:
     - {fileID: 238443097295942336}
   _fpsController: {fileID: 0}
   audioSource: {fileID: 6562562397733913156}
-  fireAudioClip: {fileID: 8300000, guid: 33e623a262260514b99b5faba7c5afa8, type: 3}
+  fireAudioClip: {fileID: 8300000, guid: 1f0114e103fba734092e4a2c2ba27215, type: 3}
   reloadAudioClip: {fileID: 8300000, guid: 6563077868a4811418b973d1eca39630, type: 3}
+  aimAudioClip: {fileID: 8300000, guid: 0d70c054d581ca845add40fe03bbd83b, type: 3}
 --- !u!95 &2151158701131182720
 Animator:
   serializedVersion: 5
@@ -862,7 +863,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0

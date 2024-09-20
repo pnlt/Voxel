@@ -91,6 +91,7 @@ namespace Demo.Scripts.Runtime.Item
         public AudioSource audioSource;
         public AudioClip fireAudioClip;
         public AudioClip reloadAudioClip;
+        public AudioClip aimAudioClip;
         private void Awake()
         {
             SetUp(data.replacement);
@@ -214,6 +215,7 @@ namespace Demo.Scripts.Runtime.Item
         public override bool OnAimPressed()
         {
             _userInputController.SetValue(FPSANames.IsAiming, true);
+            audioSource.PlayOneShot(aimAudioClip);
             UpdateTargetFOV(true);
             _recoilAnimation.isAiming = true;
             
