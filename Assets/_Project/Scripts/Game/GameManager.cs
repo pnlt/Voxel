@@ -65,11 +65,11 @@ namespace InfimaGames.LowPolyShooterPack
 
         private void OnClientConnected(ulong obj)
         {
-            //Debug.Log($"Player Connected: {obj}");
+            Debug.Log($"Player Connected: {obj}");
         }
         private void ConnectionApproval(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
-            //Debug.Log($"Player Connection: {request.ClientNetworkId}");
+            Debug.Log($"Player Connection: {request.ClientNetworkId}");
             response.Approved = true;
             response.CreatePlayerObject = true;
             response.Pending = false;

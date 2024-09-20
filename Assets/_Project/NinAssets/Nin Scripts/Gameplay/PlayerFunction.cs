@@ -38,7 +38,6 @@ public class PlayerFunction : NetworkBehaviour
         luckyNum.OnValueChanged += SelectionProcess;
         if (IsServer && OwnerClientId == 0)
         {
-            Debug.Log("gg");
             luckyNum.Value = (ulong)Random.Range(1, 101);
         }
         else
@@ -65,10 +64,10 @@ public class PlayerFunction : NetworkBehaviour
     private void ChosenOneServerRpc(ulong val)
     {
         //ChosenOneClientRpc(val);
-        if (val == OwnerClientId)
-            Debug.Log(OwnerClientId + "Get secretBox" + val);
-        else
-            Debug.Log(OwnerClientId + "Nope" + val);
+      //  if (val == OwnerClientId)
+          //  Debug.Log(OwnerClientId + "Get secretBox" + val);
+       // else
+           // Debug.Log(OwnerClientId + "Nope" + val);
     }
 
     [ClientRpc]

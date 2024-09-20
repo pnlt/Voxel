@@ -143,11 +143,6 @@ namespace Game
 
         public async Task StartGame()
         {
-            Loading();
-        }
-
-        private async void Loading()
-        {
             string relayJoinCode = await RelayManager.Instance.CreateRelay(_maxNumberOfPlayers);
             _inGame = true;
 

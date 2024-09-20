@@ -27,7 +27,6 @@ public class Spawner : NetworkBehaviour
     public void SpawnBullet()
     {
         if (!IsOwner) return;
-        Debug.Log("Spawn bullet");
         SpawnBulletServerRpc();
     }
 

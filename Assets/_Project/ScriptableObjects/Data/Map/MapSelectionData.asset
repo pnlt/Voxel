@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Maps:
   - MapThumbnail: {r: 1, g: 0, b: 0, a: 1}
-    MapName: Dessert Map
+    MapName: Dessert
     SceneName: DessertMap

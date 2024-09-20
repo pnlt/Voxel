@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Game.Events;
 using Unity.Services.Authentication;
@@ -13,22 +14,24 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
 {
     public class LobbyManager : Core.Singleton<LobbyManager>
     {
-        private Lobby _lobby;
+        private static Lobby _lobby;
         private Coroutine _heartbeatCoroutine;
-        private Coroutine _refreshLobbyCoroutine;
+        private static CancellationTokenSource _updateLobbySource;
+        private const int LobbyRefreshRate = 2;
+        //private Coroutine _refreshLobbyCoroutine;
 
         private List<string> _joinedLobbiesId;
         
-        public async Task<bool> HasActiveLobbies()
-        {
-            _joinedLobbiesId = await LobbyService.Instance.GetJoinedLobbiesAsync();
-            if (_joinedLobbiesId.Count > 0)
-            {
-                return true;
-            }
+       public async Task<bool> HasActiveLobbies()
+       {
+           _joinedLobbiesId = await LobbyService.Instance.GetJoinedLobbiesAsync();
+           if (_joinedLobbiesId.Count > 0)
+           {
+               return true;
+           }
 
-            return false;
-        }
+           return false;
+       }
         
         public string GetLobbyCode()
         {
@@ -57,7 +60,8 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
             //Debug.Log($"Lobby created with lobby id {_lobby.Id}");
 
             _heartbeatCoroutine = StartCoroutine(HeartbeatLobbyCoroutine(_lobby.Id, 6f));
-            _refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_lobby.Id, 1f));
+            //_refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_lobby.Id, 1f));
+            PeriodicallyRefreshLobby();
             
             return true;
         }
@@ -73,21 +77,34 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
             }
         }
 
-        private IEnumerator RefreshLobbyCoroutine(string lobbyId, float waitTimeSeconds)
-        {
-            while (true)
-            {
-                Task<Lobby> task = LobbyService.Instance.GetLobbyAsync(lobbyId);
-                yield return new WaitUntil(() => task.IsCompleted);
-                Lobby newLobby = task.Result;
-                if (newLobby.LastUpdated > _lobby.LastUpdated)
-                {
-                    _lobby = newLobby;
-                    LobbyEvents.OnLobbyUpdated?.Invoke(_lobby);
-                }
-                yield return new WaitForSecondsRealtime(waitTimeSeconds);
-            }
-        }
+       // private IEnumerator RefreshLobbyCoroutine(string lobbyId, float waitTimeSeconds)
+       // {
+       //     while (true)
+       //     {
+       //         Task<Lobby> task = LobbyService.Instance.GetLobbyAsync(lobbyId);
+       //         yield return new WaitUntil(() => task.IsCompleted);
+       //         Lobby newLobby = task.Result;
+       //         if (newLobby.LastUpdated > _lobby.LastUpdated)
+       //         {
+       //             _lobby = newLobby;
+       //             LobbyEvents.OnLobbyUpdated?.Invoke(_lobby);
+       //         }
+       //         yield return new WaitForSecondsRealtime(waitTimeSeconds);
+       //     }
+       // }
+       
+       private static async void PeriodicallyRefreshLobby()
+       {
+           _updateLobbySource = new CancellationTokenSource();
+           await Task.Delay(LobbyRefreshRate * 1000); // Initial delay
+           while (!_updateLobbySource.IsCancellationRequested && _lobby != null)
+           {
+               _lobby = await Lobbies.Instance.GetLobbyAsync(_lobby.Id);
+               LobbyEvents.OnLobbyUpdated?.Invoke(_lobby);
+               await Task.Delay(LobbyRefreshRate * 1000); // Delay between updates
+           }
+       }
+
         private Dictionary<string, PlayerDataObject> SerializePlayerData(Dictionary<string, string> data)
         {
             Dictionary<string, PlayerDataObject> playerData = new Dictionary<string, PlayerDataObject>();
@@ -135,7 +152,9 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
                 return false;
             }
             
-            _refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_lobby.Id, 1f));
+            //_refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_lobby.Id, 1f));
+            PeriodicallyRefreshLobby();
+
             return true;
         }
 
@@ -209,7 +228,8 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
             {
                 return false;
             }
-            _refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_joinedLobbiesId[0], 1f));
+            //_refreshLobbyCoroutine = StartCoroutine(RefreshLobbyCoroutine(_joinedLobbiesId[0], 1f));
+            PeriodicallyRefreshLobby();
             return true;
         }
 
