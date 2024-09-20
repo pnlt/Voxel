@@ -183,7 +183,6 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
                 if (penetrationStrenght > 0)
                 {
                     RaycastHit hit = hits[i];
-                    Debug.Log(hit.collider.gameObject.name);
                     UpdateHits(ray, hit);
                 }
             }

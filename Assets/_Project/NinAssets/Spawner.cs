@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Demo.Scripts.Runtime.Item;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using Unity.Netcode;
@@ -30,7 +27,6 @@ public class Spawner : NetworkBehaviour
     public void SpawnBullet()
     {
         if (!IsOwner) return;
-        Debug.Log("Spawn bullet");
         SpawnBulletServerRpc();
     }
 

@@ -37,7 +37,7 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (playerBuff.hasSecretBox)
+            if (player.hasSecretBox)
             {
                 //If Checkpoint is in restoring state
                 if (_isInRecover)
@@ -64,7 +64,7 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (playerBuff.hasSecretBox)
+            if (player.hasSecretBox)
             {
                 //If Checkpoint is in restoring state
                 if (_isInRecover)
@@ -101,7 +101,7 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (playerBuff.hasSecretBox)
+            if (player.hasSecretBox)
             {
                 playerBuff.GetVoxelUI.SetActive(false);
             }

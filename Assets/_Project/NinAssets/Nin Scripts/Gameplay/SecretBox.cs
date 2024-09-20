@@ -45,7 +45,7 @@ public class SecretBox : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         //if some player collide with the secretBox
-        if (collider.TryGetComponent<PlayerBuff>(out var player))
+        if (collider.TryGetComponent<PlayerFunction>(out var player))
         {
             player.hasSecretBox = true;
         }
