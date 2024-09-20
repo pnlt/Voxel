@@ -3,7 +3,6 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -31,7 +30,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 
     private void Awake()
     {
-      currentHealth.Value = maxHealth;
+        currentHealth.Value = maxHealth;
     }
 
     private void Start()
@@ -91,7 +90,6 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         {
             return;
         }
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value - damageValue, 0, maxHealth);
         if (m_IsPlayerDead)
         {
             OnDie?.Invoke(this);
@@ -109,6 +107,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 currentHealth.Value -= damageValue * 1;
                 break;
         }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
         PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
         GetShotEffect(.2f);
         
@@ -120,13 +119,8 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         if (IsOwner)
         {
             currentHealthTxt.text = currentHealth.ToString();
-            UpdateHealthVisual(currentHealth);
+            healthVisual.fillAmount = currentHealth / 100f;
         }
-    }
-
-    private void UpdateHealthVisual(float currentHealth)
-    {
-        healthVisual.fillAmount = currentHealth / 100f;
     }
 
     public void UpdateCurrentAmountTxt(int currentAmount)

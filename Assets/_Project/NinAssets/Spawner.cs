@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Demo.Scripts.Runtime.Item;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using Unity.Netcode;
