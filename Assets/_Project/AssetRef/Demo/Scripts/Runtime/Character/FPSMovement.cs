@@ -94,7 +94,11 @@ namespace Demo.Scripts.Runtime.Character
         private bool _consumeMoveInput = true;
 
         private float _gaitProgress;
-        
+
+        public AudioSource audioSource;
+        public AudioClip walkAudioClip;
+        public AudioClip runAudioClip;
+
         public bool IsInAir()
         {
             return !_controller.isGrounded;
@@ -409,12 +413,32 @@ namespace Demo.Scripts.Runtime.Character
             PoseState = FPSPoseState.Standing;
 
             _desiredGait = _cachedGait = movementSettings.idle;
+
         }
         
         private void Update()
         {
             if (!IsOwner) return;
-            
+
+            if (MovementState == FPSMovementState.Walking) 
+            {
+                audioSource.clip = walkAudioClip;
+                audioSource.loop = true;
+                if (!audioSource.isPlaying)
+                    audioSource.Play();
+            }else if (MovementState == FPSMovementState.Sprinting)
+            {
+                audioSource.clip = runAudioClip;
+                audioSource.loop = true;
+                if (!audioSource.isPlaying)
+                    audioSource.Play();
+            }
+            else
+            {
+                if (audioSource.isPlaying)
+                    audioSource.Stop();
+            }
+
             UpdateMovementState();
             
             if (_cachedMovementState != MovementState)
@@ -508,28 +532,28 @@ namespace Demo.Scripts.Runtime.Character
             _desiredGait = movementSettings.walking;
         }
 
-        public void OnProne()
-        {
-            if (!_consumeMoveInput) return;
+        //public void OnProne()
+        //{
+        //    if (!_consumeMoveInput) return;
             
-            if (MovementState is FPSMovementState.Sprinting or FPSMovementState.InAir)
-            {
-                return;
-            }
+        //    if (MovementState is FPSMovementState.Sprinting or FPSMovementState.InAir)
+        //    {
+        //        return;
+        //    }
 
-            if (!CanProne())
-            {
-                return;
-            }
+        //    if (!CanProne())
+        //    {
+        //        return;
+        //    }
             
-            if (PoseState == FPSPoseState.Prone)
-            {
-                OnProneDisabled();
-                return;
-            }
+        //    if (PoseState == FPSPoseState.Prone)
+        //    {
+        //        OnProneDisabled();
+        //        return;
+        //    }
             
-            OnProneEnabled();
-        }
+        //    OnProneEnabled();
+        //}
 
         public void OnJump()
         {

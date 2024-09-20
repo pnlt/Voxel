@@ -915,10 +915,10 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: b63554b6-814f-45b3-9835-a835f2103381
+  cloudProjectId: 3886065d-4af5-4779-8f7e-c88a69dadc47
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: VoxelFinal
+  projectName: Voxel
   organizationId: pnlt170603
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

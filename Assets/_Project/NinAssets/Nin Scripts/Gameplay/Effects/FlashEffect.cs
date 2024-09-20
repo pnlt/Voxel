@@ -14,6 +14,7 @@ public class FlashEffect : Effect, IOutDateEffect
     public override void BuffEffect(PlayerData stat)
     {
         //plus velocity
+        Debug.Log("Speed up");
     }
 
     public async void UpdateEffectUse(PlayerData data)

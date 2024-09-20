@@ -1,33 +1,56 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class CheckPointAchievement : MonoBehaviour
+public class CheckPointAchievement : NetworkBehaviour
 {
-    private Voxel _voxel;
+    [SerializeField] private Voxel _voxel;
+
+    private PlayerBuff _playerBuff;
     
-    private void OnEnable()
+
+    public override void OnNetworkSpawn()
     {
-        GameManager.GetVoxel += GiveVoxel;
+        base.OnNetworkSpawn();
     }
 
     /// <summary>
     /// Grant the voxel for player who reaches the checkpoint
     /// </summary>
     /// <param name="voxel"></param>
-    private void GiveVoxel(Voxel voxel)
+    /// <param name="t">message</param>
+    private void GiveVoxel(object t)
     {
-        GameManager.voxels.Add(voxel);
+        //_playerBuff.ApplyEffect(_voxel.Effect);
+        Debug.Log("cac");
     }
     
-    private void GrantEffect(List<Effect> effects)
+    private void OnTriggerEnter(Collider obj)
     {
-        effects.Add(_voxel.Effect);
+        if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
+        {
+            if (player.HasSecretBox)
+            {
+                _playerBuff = playerBuff;
+            }
+        }
     }
 
-    private void OnDisable()
+    private void OnTriggerStay(Collider obj)
     {
-        GameManager.GetVoxel -= GiveVoxel;
+        if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
+        {
+            if (player.HasSecretBox)
+            {
+                _playerBuff = playerBuff;
+            }
+        }
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
     }
 }

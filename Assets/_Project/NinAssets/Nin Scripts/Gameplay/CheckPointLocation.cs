@@ -37,7 +37,7 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (player.hasSecretBox)
+            if (player.HasSecretBox)
             {
                 //If Checkpoint is in restoring state
                 if (_isInRecover)
@@ -56,7 +56,6 @@ public class CheckPointLocation : MonoBehaviour
                 playerBuff.GetVoxelUI.SetActive(showUIFlag);
             }
         }
-        
         //Allow player to use Pick up button to interact and get the Voxel
     }
 
@@ -64,17 +63,15 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (player.hasSecretBox)
+            if (player.HasSecretBox)
             {
                 //If Checkpoint is in restoring state
                 if (_isInRecover)
                 {
-                    Debug.Log("can not interact");
                     player.CanInteractVoxel = false;
                 }
                 else
                 {
-                    Debug.Log("can interact");
                     player.CanInteractVoxel = true;
                     if (player.Interacted)
                         _isInRecover = true;
@@ -86,7 +83,6 @@ public class CheckPointLocation : MonoBehaviour
             }
             else
             {
-                Debug.Log("can not interact");
                 player.CanInteractVoxel = false;
                 playerBuff.GetVoxelUI.SetActive(false);
             }
@@ -101,7 +97,7 @@ public class CheckPointLocation : MonoBehaviour
     {
         if (obj.TryGetComponent<PlayerBuff>(out var playerBuff) && obj.TryGetComponent<PlayerFunction>(out var player))
         {
-            if (player.hasSecretBox)
+            if (player.HasSecretBox)
             {
                 playerBuff.GetVoxelUI.SetActive(false);
             }
