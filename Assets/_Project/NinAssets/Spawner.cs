@@ -7,10 +7,12 @@ using Weapon = Demo.Scripts.Runtime.Item.Weapon;
 public class Spawner : NetworkBehaviour
 {
     public static Spawner Instance;
-    public WeaponData data;
-    public Transform muzzle;
-    public GameObject projectileParent;
+    
+    [Header ("Weapon")]
     public Weapon weapon;
+    private WeaponData data;
+    private Transform muzzle;
+    private GameObject projectileParent;
 
     private void Awake()
     {
@@ -27,6 +29,7 @@ public class Spawner : NetworkBehaviour
     public void SpawnBullet()
     {
         if (!IsOwner) return;
+        
         SpawnBulletServerRpc();
     }
 
@@ -35,7 +38,6 @@ public class Spawner : NetworkBehaviour
     {
         CreateProjectile(data.projectile, weapon, muzzle, muzzle.forward, data.muzzleVelocity, data.range);
     }
-
     
     private void CreateProjectile(FPSProjectiles projectile, Weapon source, Transform muzzle, Vector3 direction, float speed, float range)
     {

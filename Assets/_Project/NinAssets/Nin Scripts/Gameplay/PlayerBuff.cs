@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerBuff : MonoBehaviour
+public class PlayerBuff : NetworkBehaviour
 {
     //public Effect effect;
     public SecretBox secretBox;
@@ -14,10 +14,9 @@ public class PlayerBuff : MonoBehaviour
     private void Awake()
     {
         effects = new List<Effect>();
-        
     }
 
-    private void ApplyEffect(Effect newEffect)
+    public void ApplyEffect(Effect newEffect)
     {
         newEffect.BuffEffect(data);
         effects.Add(newEffect);

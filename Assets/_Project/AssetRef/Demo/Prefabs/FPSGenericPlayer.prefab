@@ -3214,7 +3214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3eb5cbd0f318494282673f3090528dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasSecretBox: 0
+  buffEvent: {fileID: 11400000, guid: 566d0c5ac5ed5664c8771749f380e2c4, type: 2}
 --- !u!1 &7151070337432973102
 GameObject:
   m_ObjectHideFlags: 0
@@ -4365,7 +4365,9 @@ PrefabInstance:
     - target: {fileID: 4740762751429298355, guid: 48d7771c50bd625489d38055025597a3,
         type: 3}
       propertyPath: m_text
-      value: 100
+      value: '100
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 4740762751429298355, guid: 48d7771c50bd625489d38055025597a3,
         type: 3}
@@ -4987,6 +4989,11 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 7948552440595140459}
+    - target: {fileID: 137539473491527576, guid: 31bd009d0cfe1d4469a301d642c98c7a,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1267010966547094529, guid: 31bd009d0cfe1d4469a301d642c98c7a,
         type: 3}
       propertyPath: m_AnchorMax.y
