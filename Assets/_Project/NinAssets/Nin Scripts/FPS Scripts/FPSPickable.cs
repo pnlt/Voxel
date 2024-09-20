@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Akila.FPSFramework;
@@ -12,6 +13,7 @@ namespace InfimaGames.LowPolyShooterPack
         ITEM
     }
 
+    [Serializable]
     public class FPSPickable : MonoBehaviour, IInteractable
     {
         
@@ -84,7 +86,7 @@ namespace InfimaGames.LowPolyShooterPack
             else if (inventory.Items.Count >= inventory.MaxSlot)
             {
                 FPSItem oldItem = inventory.GetActiveItem();
-                inventory.ReplaceItem(oldItem, item);
+                //inventory.ReplaceItem(oldItem, item);
             }
         
             /*if (newItem.TryGetComponent<Firearm>(out Firearm firearm))

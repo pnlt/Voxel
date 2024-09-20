@@ -10,15 +10,17 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
     public class FPSProjectiles : NetworkBehaviour
     {
         [Header("Base Settings")]
-        public LayerMask hittableLayers = -1;
+        public LayerMask damageable = -1;
         public Vector3Direction decalDirection = Vector3Direction.forward;
         public float penetrationStrenght = 100;
         public float speed = 50;
         public float gravity = 1;
         public float force = 10;
         public int lifeTime = 5;
+        public WeaponData data;
         public GameObject defaultDecal;
         public Spawner parent;
+        
 
         [Header("Additional Settings")]
         public bool destroyOnImpact = false;
@@ -55,21 +57,6 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            if (IsServer)
-            {
-                //Initialize();
-                StartCoroutine(WaitForSourceAndInitialize());
-            }
-            else
-            {
-                //InitializeServerRpc();
-                WaitForSourceAndInitializeServerRpc();
-            }
-        }
-        
-        [ServerRpc(RequireOwnership = false)]
-        private void WaitForSourceAndInitializeServerRpc()
-        {
             StartCoroutine(WaitForSourceAndInitialize());
         }
 
@@ -95,17 +82,6 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
                 InitializeWithDefaults();
             }
 
-            InitializeClientRpc();
-        }
-        
-
-        [ClientRpc]
-        private void InitializeClientRpc()
-        {
-            if (!IsServer)
-            {
-                Initialize();
-            }
         }
         
         private void Initialize()
@@ -152,7 +128,6 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             isInitialized = true;
         }
 
-
         public virtual void Setup()
         {
             previousPosition = transform.position;
@@ -172,24 +147,18 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             explosive = GetComponent<Explosive>();
         }
 
-
         private void Update()
         {
             if(!IsOwner) return;
-            if (!IsSpawned || !isInitialized)
-            {
-                return;
-            }
             
-            float distanceFromStartPosition = Vector3.Distance(startPosition, transform.position);
-            distanceFromStartPosition = Mathf.Clamp(distanceFromStartPosition, 0, range);
+            //float distanceFromStartPosition = Vector3.Distance(startPosition, transform.position);
+            //distanceFromStartPosition = Mathf.Clamp(distanceFromStartPosition, 0, range);
 
-            damageRangeFactor = (rb.velocity.magnitude / maxVelocity) * (damageRangeCurve.Evaluate(distanceFromStartPosition / range));
-            damage = (int)((!source.data.alwaysApplyFire ? source.data.damage / source.data.shotCount : source.data.damage) * damageRangeFactor);
-
+            //damageRangeFactor = (rb.velocity.magnitude / maxVelocity) * (damageRangeCurve.Evaluate(distanceFromStartPosition / range));
+            //damage = (int)((!source.data.alwaysApplyFire ? source.data.damage / source.data.shotCount : source.data.damage) * damageRangeFactor);
+            damage = 10;
 
             RaycastServerRpc();
-            
 
             if (Effects)
             {
@@ -197,22 +166,16 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
+        [ServerRpc]
         private void RaycastServerRpc()
         {
-            if (!IsSpawned || !isInitialized)
-            {
-                return;
-            }
-
             PerformRaycast();
-            
         }
 
         private void PerformRaycast()
         {
             Ray ray = new Ray(previousPosition, -(previousPosition - transform.position));
-            RaycastHit[] hits = Physics.RaycastAll(ray, Vector3.Distance(transform.position, previousPosition));
+            RaycastHit[] hits = Physics.RaycastAll(ray, Vector3.Distance(transform.position, previousPosition), damageable);
             if (penetrationStrenght <= 0) DestroyBulletServerRpc();
 
             for (int i = 0; i < hits.Length; i++)
@@ -252,6 +215,12 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
                 return;
             }
 
+            ProcessRbServerRpc();
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void ProcessRbServerRpc()
+        {
             if (rb != null)
             {
                 rb.AddForce(Physics.gravity * gravity, ForceMode.Acceleration);
@@ -259,6 +228,12 @@ namespace InfimaGames.LowPolyShooterPack._Project.ScriptsPN
         }
 
         private void LateUpdate()
+        {
+            UpdateLastPostionServerRpc();
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        private void UpdateLastPostionServerRpc()
         {
             previousPosition = transform.position;
         }

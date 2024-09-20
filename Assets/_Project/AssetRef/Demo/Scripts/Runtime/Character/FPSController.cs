@@ -402,13 +402,6 @@ namespace Demo.Scripts.Runtime.Character
             _userInput.SetValue(FPSANames.PlayablesWeight, playablesWeight);
         }
 
-       // private void Update()
-       // {
-       //     //if (!IsOwner) return;
-       //     Time.timeScale = settings.timeScale;
-       //     UpdateLookInput();
-       //     OnMovementUpdated();
-       // }
        private void Update()
        {
            if (IsOwner)
@@ -694,9 +687,10 @@ namespace Demo.Scripts.Runtime.Character
             EquipWeaponClientRpc(newWeaponIndex, state);
         }
 
-        public void OnChangeWeapon()
+        public void OnChangeWeapon(InputValue value)
         {
-            ChangeWeapon(FPSItem.WeaponState.NONE);
+            if (value.Get<Vector2>() != Vector2.zero)
+                ChangeWeapon(FPSItem.WeaponState.NONE);
         }
 
         public void OnLook(InputValue value)

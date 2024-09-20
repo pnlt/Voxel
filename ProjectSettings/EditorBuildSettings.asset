@@ -9,24 +9,12 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/Lobby/Init.unity
     guid: 3769170ffbdc6df409c08b4c6f814da0
   - enabled: 1
-    path: Assets/_Project/Scenes/Lobby/Loading.unity
-    guid: 71b221c134c391a4d9ece601ee514657
-  - enabled: 1
     path: Assets/_Project/Scenes/Menu/MainMenu.unity
     guid: bcfc2f547fdb55d47beeb51011ffecc2
   - enabled: 1
     path: Assets/_Project/Scenes/Lobby/Lobby.unity
     guid: 1d56a7d61fcccab40a210cbffe8d10ee
   - enabled: 1
-    path: Assets/_Project/Scenes/Maps/RedScene.unity
-    guid: 3b7eed4dfbdd10f49a280e5b81b9474a
-  - enabled: 1
-    path: Assets/_Project/Scenes/Maps/GreenScene.unity
-    guid: 0d1982c3b179b4546acbfcaf5b483e6e
-  - enabled: 1
-    path: Assets/_Project/Scenes/Maps/BlueScene.unity
-    guid: eff5418a1096e0348856cae873fe8ac7
-  - enabled: 1
-    path: Assets/_Project/Scenes/Maps/YellowScene.unity
-    guid: 40b0b97a5e59eb54fb705ca2b795be47
+    path: Assets/_Project/Scenes/Maps/DessertMap.unity
+    guid: 0c3ad295a32b6aa4797262a8b23da340
   m_configObjects: {}

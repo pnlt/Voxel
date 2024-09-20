@@ -18,6 +18,8 @@
     "com.unity.timeline": "1.7.6",
     "com.unity.ugui": "1.0.0",
     "com.unity.visualscripting": "1.9.4",
+    "com.zbase.foundation": "1.0.6",
+    "com.zbase.foundation.pubsub": "1.5.1",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
@@ -49,5 +51,16 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  }
+  },
+  "scopedRegistries": [
+    {
+      "name": "OpenUPM",
+      "url": "https://package.openupm.com",
+      "scopes": [
+        "com.zbase",
+        "com.cysharp",
+        "org.nuget"
+      ]
+    }
+  ]
 }

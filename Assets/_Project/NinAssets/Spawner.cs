@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Demo.Scripts.Runtime.Item;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using Unity.Netcode;
@@ -48,16 +45,16 @@ public class Spawner : NetworkBehaviour
     
         if (networkObject.IsSpawned)
         {
-            AssignDataServerRpc(networkObject, direction, speed, range);
+            AssignDataClientRpc(networkObject, direction, speed, range);
         }
         
     }
 
-    [ServerRpc]
-    private void AssignDataServerRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
-    {
-        AssignDataClientRpc(projectileReference, direction, speed, range);   
-    }
+    // [ServerRpc]
+    // private void AssignDataServerRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
+    // {
+    //     AssignDataClientRpc(projectileReference, direction, speed, range);   
+    // }
 
     [ClientRpc]
     private void AssignDataClientRpc(NetworkObjectReference projectileReference, Vector3 direction, float speed, float range)
@@ -69,6 +66,7 @@ public class Spawner : NetworkBehaviour
         newProjectile.speed = speed;
         newProjectile.source = weapon;
         newProjectile.range = range;
+        newProjectile.data = data;
         newProjectile.useAutoScaling = weapon.data.tracerRounds;
         newProjectile.scaleMultipler = weapon.data.projectileSize;
         newProjectile.damageRangeCurve = weapon.data.damageRangeCurve;
