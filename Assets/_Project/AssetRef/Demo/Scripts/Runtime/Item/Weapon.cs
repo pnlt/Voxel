@@ -87,6 +87,11 @@ namespace Demo.Scripts.Runtime.Item
         private bool IsReloading = false;
 
         private PlayerSpirit playerSpirit;
+
+        public AudioSource audioSource;
+        public AudioClip fireAudioClip;
+        public AudioClip reloadAudioClip;
+        public AudioClip aimAudioClip;
         private void Awake()
         {
             SetUp(data.replacement);
@@ -210,6 +215,7 @@ namespace Demo.Scripts.Runtime.Item
         public override bool OnAimPressed()
         {
             _userInputController.SetValue(FPSANames.IsAiming, true);
+            audioSource.PlayOneShot(aimAudioClip);
             UpdateTargetFOV(true);
             _recoilAnimation.isAiming = true;
             
@@ -265,7 +271,7 @@ namespace Demo.Scripts.Runtime.Item
             }
             
             _playablesController.PlayAnimation(reloadClip, 0f);
-            
+            audioSource.PlayOneShot(reloadAudioClip);
             if (_weaponAnimator != null)
             {
                 _weaponAnimator.Rebind();
@@ -421,6 +427,8 @@ namespace Demo.Scripts.Runtime.Item
             Spawner.Instance.SpawnBullet();
 
             ThrowCasing();
+
+            audioSource.PlayOneShot(fireAudioClip);
 
             if (_recoilAnimation.fireMode == FireMode.Semi)
             {

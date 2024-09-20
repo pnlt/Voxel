@@ -127,6 +127,8 @@ namespace Demo.Scripts.Runtime.Character
         private static int _inspectEndHash = Animator.StringToHash("InspectEnd");
         private static int _slideHash = Animator.StringToHash("Sliding");
 
+        public GameObject aimPanel;
+
         private void PlayTransitionMotion(FPSAnimatorLayerSettings layerSettings)
         {
             if (layerSettings == null)
@@ -186,8 +188,10 @@ namespace Demo.Scripts.Runtime.Character
         {
             _instantiatedWeapons = new List<FPSItem>();
 
+
             foreach (var prefab in settings.weaponPrefabs)
             {
+                Debug.Log(prefab);
                 AddItem(prefab);
             }
         }
@@ -674,6 +678,7 @@ namespace Demo.Scripts.Runtime.Character
             if (value.isPressed && !IsAiming())
             {
                 // Send aim action to the server
+                aimPanel.SetActive(false);
                 StartAimingServerRpc();
                 return;
             }
@@ -682,6 +687,7 @@ namespace Demo.Scripts.Runtime.Character
             if (!value.isPressed && IsAiming())
             {
                 // Send stop aim action to the server
+                aimPanel.SetActive(true);
                 StopAimingServerRpc();
             }
         }
@@ -694,9 +700,10 @@ namespace Demo.Scripts.Runtime.Character
             EquipWeaponClientRpc(newWeaponIndex, state);
         }
 
-        public void OnChangeWeapon()
+        public void OnChangeWeapon(InputValue value)
         {
-            ChangeWeapon(FPSItem.WeaponState.NONE);
+            if (value.Get<Vector2>() != Vector2.zero)
+                ChangeWeapon(FPSItem.WeaponState.NONE);
         }
 
         public void OnLook(InputValue value)
