@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d409f1dd654fdd84396850d17c5385e4, type: 3}
   m_Name: AK12
   m_EditorClassIdentifier: 
-  Name: MK18
+  Name: AK12
   replacement: {fileID: 8570688325653575191, guid: 51b6d00040d7b1248876b01d0279a460,
     type: 3}
   canves: {fileID: 0}
@@ -23,7 +23,7 @@ MonoBehaviour:
     m_Bits: 4294967295
   projectile: {fileID: 2534988501845755173, guid: 6c8564a6d33058c488dd47c26b90bb10,
     type: 3}
-  casing: {fileID: 5982293670522764668, guid: 5bfe3002879691849b7a1340ac4b704a, type: 3}
+  casing: {fileID: 1505783374226792693, guid: af363bf468502534bb337f607f39a75d, type: 3}
   defaultDecal: {fileID: 0}
   decalDirection: 0
   fireRate: 833
@@ -71,7 +71,7 @@ MonoBehaviour:
   magazineCapacity: 30
   reserve: 0
   automaticReload: 1
-  amount: 30
+  amount: 20
   aimSpeed: 10
   aimFieldOfView: 50
   aimWeaponFieldOfview: 40
