@@ -73,10 +73,15 @@ public class SecretBox : NetworkBehaviour
             var playerNetworkObj = NetworkManager.LocalClient.PlayerObject;
             var playerObj = playerNetworkObj.GetComponent<PlayerFunction>();
             
+
             if (playerObj.HasSecretBox)
+            {
                 Debug.LogError("Winner");
-            else 
+            }
+            else
+            {
                 Debug.LogError("Lose");
+            }
             
         }
     }
