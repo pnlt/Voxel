@@ -11,27 +11,19 @@ namespace Game
 {
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private GameObject _mainScreen;
-        [SerializeField] private GameObject _joinScreen;
         [SerializeField] private Button _hostButton;
-        [SerializeField] private Button _joinButton;
-        [SerializeField] private Button _rejoinButton;
-        [SerializeField] private Button _leaveButton;
-
         [SerializeField] private Button _submitCodeButton;
         [SerializeField] private TextMeshProUGUI _codeText;
 
         private void OnEnable()
         {
             _hostButton.onClick.AddListener(OnHostClicked);
-            _joinButton.onClick.AddListener(OnJoinClicked);
             _submitCodeButton.onClick.AddListener(OnSubmitCodeClicked);
         }
 
         private void OnDisable()
         {
             _hostButton.onClick.RemoveListener(OnHostClicked);
-            _joinButton.onClick.RemoveListener(OnJoinClicked);
             _submitCodeButton.onClick.RemoveListener(OnSubmitCodeClicked);
         }
 
@@ -40,13 +32,6 @@ namespace Game
             if (await GameLobbyManager.Instance.HasActivelobbies())
             {
                 _hostButton.gameObject.SetActive(false);
-                _joinButton.gameObject.SetActive(false);
-                
-                _rejoinButton.gameObject.SetActive(true);
-                _leaveButton.gameObject.SetActive(true);
-                
-                _rejoinButton.onClick.AddListener(OnRejoinGameClicked);
-                _leaveButton.onClick.AddListener(OnLeaveGameClicked);
             }
         }
 
@@ -76,12 +61,6 @@ namespace Game
             {
                 SceneManager.LoadSceneAsync("Lobby");
             }
-        }
-
-        private void OnJoinClicked()
-        {
-            _mainScreen.SetActive(false);
-            _joinScreen.SetActive(true);
         }
 
         private async void OnSubmitCodeClicked()
