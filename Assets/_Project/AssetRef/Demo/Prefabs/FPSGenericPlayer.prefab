@@ -2950,7 +2950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 491693261
+  GlobalObjectIdHash: 777461556
   InScenePlacedSourceGlobalObjectIdHash: 777461556
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -3193,6 +3193,8 @@ MonoBehaviour:
   healthVisual: {fileID: 7602434964368943347}
   currentAmountTxt: {fileID: 6314256848565988529}
   totalAmountTxt: {fileID: 8771655144667509840}
+  blinkIntensity: 0
+  blinkDuration: 0
 --- !u!114 &3300909210458206618
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using Cysharp.Threading.Tasks;
+using Demo.Scripts.Runtime.Character;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -27,7 +29,10 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 
     public TextMeshProUGUI currentAmountTxt;
     public TextMeshProUGUI totalAmountTxt;
-
+    public float blinkIntensity;
+    public float blinkDuration;
+    float blinkTimer;
+    SkinnedMeshRenderer skinnedMeshRenderer;
     private void Awake()
     {
         currentHealth.Value = maxHealth;
@@ -81,20 +86,77 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         transform.eulerAngles = playerRotation;
     }
 
-    public void TakeDamage(int damageValue, BodyPart position)
+    private void Update()
+    {
+        blinkTimer -= Time.deltaTime;
+        float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
+        float intensity = (lerp * blinkIntensity) + 1.0f;
+        skinnedMeshRenderer.material.color = Color.white * intensity;
+    }
+
+    public void Die(ulong clientId)
+    {
+        if (m_IsPlayerDead)
+        {
+            NetworkObject playerPrefab = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            playerPrefab.GetComponent<FPSMovement>().enabled = false;
+            playerPrefab.GetComponent<FPSController>().enabled = false;
+            RespawnPlayer(clientId);
+        }
+    }
+
+    public void RespawnPlayer(ulong clientId)
+    {
+        StartCoroutine(RespawnPlayerWithDelay(clientId, 5f));
+    }
+
+    private IEnumerator RespawnPlayerWithDelay(ulong clientId, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        RespawnPlayerServerRpc(clientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void RespawnPlayerServerRpc(ulong clientId)
+    {
+        if (NetworkManager.Singleton.ConnectedClients.ContainsKey(clientId))
+        {
+            NetworkObject playerPrefab = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            if (playerPrefab != null)
+            {
+                Vector3 respawnPosition = new Vector3(0f, 1f, 0f);
+                playerPrefab.transform.position = respawnPosition;
+                playerPrefab.GetComponent<FPSMovement>().enabled = true;
+                playerPrefab.GetComponent<FPSController>().enabled = true;
+                playerPrefab.GetComponent<PlayerSpirit>().currentHealth.Value = 100;
+                RespawnPlayerClientRpc(clientId, respawnPosition);
+            }
+        }
+
+    }
+    [ClientRpc]
+    private void RespawnPlayerClientRpc(ulong clientId, Vector3 respawnPosition)
+    {
+        if (NetworkManager.Singleton.LocalClientId == clientId)
+        {
+            NetworkObject playerPrefab = NetworkManager.Singleton.SpawnManager.GetLocalPlayerObject();
+            if (playerPrefab != null)
+            {
+                playerPrefab.transform.position = respawnPosition;
+                playerPrefab.GetComponent<FPSMovement>().enabled = true;
+                playerPrefab.GetComponent<FPSController>().enabled = true;
+            }
+        }
+    }
+
+    public void TakeDamage(int damageValue, BodyPart position, ulong clientId)
     {
         if (getShot) return;
         getShot = true;
-        
-        if (m_IsPlayerDead)
-        {
-            return;
-        }
-        if (m_IsPlayerDead)
-        {
-            OnDie?.Invoke(this);
-        }
-        
+
+        if (m_IsPlayerDead) return;
+
         switch (position)
         {
             case BodyPart.HEAD:
@@ -110,8 +172,14 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
         PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
         GetShotEffect(.2f);
-        
+        //EffectsPN.SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
+        Die(clientId);
+
+        blinkTimer = blinkDuration;
+
+        EffectsPN.SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
     }
+
 
     [ClientRpc]
     public void PlayerHealthUpdateCurrentHealthTxtClientRpc(int currentHealth)

@@ -15,6 +15,7 @@ using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
 using Random = UnityEngine.Random;
+using Unity.Netcode;
 
 namespace Demo.Scripts.Runtime.Item
 {
@@ -327,16 +328,17 @@ namespace Demo.Scripts.Runtime.Item
             
             if (hit.transform.GetComponentInParent<PlayerSpirit>())
             {
+                var playerHit = hit.collider.GetComponentInParent<NetworkObject>();
                 switch (hit.collider.gameObject.tag)
                 {
                     case "Head":
-                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.HEAD);
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.HEAD, playerHit.OwnerClientId);
                         break;
                     case "Body":
-                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.BODY);
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.BODY, playerHit.OwnerClientId);
                         break;
                     case "Lower body":
-                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.LOWER_BODY);
+                        hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.LOWER_BODY, playerHit.OwnerClientId);
                         break;
                 }
             }
