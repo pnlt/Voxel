@@ -53,8 +53,8 @@ MonoBehaviour:
     hdrDebugViewPS: {fileID: 4800000, guid: 573620ae32aec764abd4d728906d2587, type: 3}
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
-  - {fileID: 550884967507770885}
-  m_RendererFeatureMap: adc0de57c6d2eee5053e6790f522a507
+  - {fileID: 6142554150907896014}
+  m_RendererFeatureMap: adc0de57c6d2eee5ce6077a274bc3e55
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &550884967507770885
+--- !u!114 &6142554150907896014
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,8 +112,8 @@ MonoBehaviour:
   m_Active: 1
   injectionPoint: 550
   fetchColorBuffer: 1
-  requirements: 4
-  passMaterial: {fileID: 2100000, guid: 8c81d9c21168164408174482c144b311, type: 2}
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 6370343e986c31243b0e4591c575ab32, type: 2}
   passIndex: 0
   bindDepthStencilAttachment: 0
   m_Version: 1
