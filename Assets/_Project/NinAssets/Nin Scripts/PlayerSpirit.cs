@@ -30,13 +30,23 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 
     public TextMeshProUGUI currentAmountTxt;
     public TextMeshProUGUI totalAmountTxt;
-    public float blinkIntensity;
-    public float blinkDuration;
-    float blinkTimer;
-    SkinnedMeshRenderer skinnedMeshRenderer;
+    //public float blinkIntensity;
+    //public float blinkDuration;
+    //float blinkTimer;
+    //SkinnedMeshRenderer skinnedMeshRenderer;
+    private static PlayerSpirit _instance;
     private void Awake()
     {
         currentHealth.Value = maxHealth;
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
     }
 
     private void Start()
@@ -89,13 +99,13 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         transform.eulerAngles = playerRotation;
     }
 
-    private void Update()
-    {
-        blinkTimer -= Time.deltaTime;
-        float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
-        float intensity = (lerp * blinkIntensity) + 1.0f;
-        //skinnedMeshRenderer.material.color = Color.white * intensity;
-    }
+  //  private void Update()
+  //  {
+  //      blinkTimer -= Time.deltaTime;
+  //      float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
+  //      float intensity = (lerp * blinkIntensity) + 1.0f;
+  //      //skinnedMeshRenderer.material.color = Color.white * intensity;
+  //  }
 
     public void Die(ulong clientId)
     {
@@ -179,7 +189,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         //SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
         Die(clientId);
 
-        blinkTimer = blinkDuration;
+        //blinkTimer = blinkDuration;
 
         SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
     }
@@ -248,6 +258,6 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
 
     public static class SpecialEffects
     {
-        public static void ScreenDamageEffect(float intensity) => ScreenDamageEffect(intensity);
+        public static void ScreenDamageEffect(float intensity) => _instance.ScreenDamageEffect(intensity);
     }
 }

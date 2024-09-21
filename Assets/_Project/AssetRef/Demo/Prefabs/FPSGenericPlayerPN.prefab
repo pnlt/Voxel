@@ -2779,7 +2779,7 @@ GameObject:
   - component: {fileID: 6752595742637403877}
   - component: {fileID: 8897002403672770217}
   m_Layer: 0
-  m_Name: FPSGenericPlayer
+  m_Name: FPSGenericPlayerPN
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -27,31 +27,31 @@ namespace Game
             _submitCodeButton.onClick.RemoveListener(OnSubmitCodeClicked);
         }
 
-        private async void Start()
-        {
-            if (await GameLobbyManager.Instance.HasActivelobbies())
-            {
-                _hostButton.gameObject.SetActive(false);
-            }
-        }
+     //   private async void Start()
+     //   {
+     //       if (await GameLobbyManager.Instance.HasActivelobbies())
+     //       {
+     //           _hostButton.gameObject.SetActive(false);
+     //       }
+     //   }
 
-        private async void OnLeaveGameClicked()
-        {
-           bool succeeded = await GameLobbyManager.Instance.LeaveAllLobby(); 
-           if (succeeded)
-           {
-               //Debug.Log("All lobbies left");
-           }
-        }
+    //    private async void OnLeaveGameClicked()
+    //    {
+    //       bool succeeded = await GameLobbyManager.Instance.LeaveAllLobby(); 
+    //       if (succeeded)
+    //       {
+    //           //Debug.Log("All lobbies left");
+    //       }
+    //    }
 
-        private async void OnRejoinGameClicked()
-        {
-          bool succeeded = await GameLobbyManager.Instance.RejoinGame();
-          if (succeeded)
-          {
-                SceneManager.LoadSceneAsync("Lobby");
-          }
-        }
+   //     private async void OnRejoinGameClicked()
+   //     {
+   //       bool succeeded = await GameLobbyManager.Instance.RejoinGame();
+   //       if (succeeded)
+   //       {
+   //             SceneManager.LoadSceneAsync("Lobby");
+   //       }
+   //     }
 
 
         private async void OnHostClicked()
