@@ -14,6 +14,7 @@ public class SecretBox : NetworkBehaviour
     public BoxState state;
     
     private bool _activated;
+    public bool Activate => _activated;
     private NetworkVariable<int> _voxelAvailable = new NetworkVariable<int>();
     [SerializeField] private int _maxVoxels = 3;
 
