@@ -27,14 +27,6 @@ namespace Game
             _submitCodeButton.onClick.RemoveListener(OnSubmitCodeClicked);
         }
 
-        private async void Start()
-        {
-            if (await GameLobbyManager.Instance.HasActivelobbies())
-            {
-                _hostButton.gameObject.SetActive(false);
-            }
-        }
-
         private async void OnLeaveGameClicked()
         {
            bool succeeded = await GameLobbyManager.Instance.LeaveAllLobby(); 
@@ -53,14 +45,19 @@ namespace Game
           }
         }
 
-
         private async void OnHostClicked()
         {
             bool succeeded = await GameLobbyManager.Instance.CreateLobby();
             if (succeeded)
             {
-                SceneManager.LoadSceneAsync("Lobby");
+                StartCoroutine(LoadingAsync());
             }
+        }
+
+        IEnumerator LoadingAsync()
+        {
+            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
+            yield return null;
         }
 
         private async void OnSubmitCodeClicked()
@@ -71,7 +68,7 @@ namespace Game
             bool succeeded = await GameLobbyManager.Instance.JoinLobby(code);
             if (succeeded)
             {
-                SceneManager.LoadSceneAsync("Lobby");
+                StartCoroutine(LoadingAsync());
             }
         }
     }

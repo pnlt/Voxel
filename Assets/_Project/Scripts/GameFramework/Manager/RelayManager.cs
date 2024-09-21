@@ -66,6 +66,7 @@ namespace InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infi
             _allocationIdBytes = allocation.AllocationIdBytes;
             _connectionData = allocation.ConnectionData;
             _hostConnectionData = allocation.HostConnectionData;
+            
             _key = allocation.Key;
 
             return true;

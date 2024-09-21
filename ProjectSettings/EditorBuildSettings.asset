@@ -17,4 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/Maps/DessertMap.unity
     guid: 0c3ad295a32b6aa4797262a8b23da340
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/_Project/Scenes/Lobby/Loading.unity
+    guid: 71b221c134c391a4d9ece601ee514657
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 33f591010f343104f853b337a1fca25a,
+      type: 2}
