@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 7952551268203456712}
   - component: {fileID: 893339622097046446}
   - component: {fileID: 3576942907862608715}
-  - component: {fileID: 3421149892938288841}
   - component: {fileID: 3795276688569104231}
+  - component: {fileID: 3421149892938288841}
   m_Layer: 0
   m_Name: Checkpoint A
   m_TagString: Untagged
@@ -121,20 +121,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   checkPointRecoverTime: 5
---- !u!114 &3421149892938288841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9008743657149352832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 711fa7a12174f5a4e9cce88d8d2c88aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _voxel: {fileID: 11400000, guid: 3936c4e0684883d44adbf8dfec24126f, type: 2}
-  buffEvent: {fileID: 11400000, guid: 566d0c5ac5ed5664c8771749f380e2c4, type: 2}
 --- !u!114 &3795276688569104231
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -156,3 +142,16 @@ MonoBehaviour:
   SpawnWithObservers: 1
   DontDestroyWithOwner: 0
   AutoObjectParentSync: 1
+--- !u!114 &3421149892938288841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9008743657149352832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 711fa7a12174f5a4e9cce88d8d2c88aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _voxel: {fileID: 11400000, guid: 3936c4e0684883d44adbf8dfec24126f, type: 2}
