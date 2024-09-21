@@ -50,8 +50,11 @@ namespace cowsins
 
         public void PlaySound(AudioClip clickSFX)
         {
-            audioSource.clip = clickSFX;
-            audioSource.Play();
+            if (audioSource)
+            {
+                audioSource.clip = clickSFX;
+                audioSource.Play();
+            }
         }
 
         public void LoadScene(int sceneIndex)

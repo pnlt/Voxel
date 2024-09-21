@@ -88,6 +88,18 @@ public class Selector : NetworkBehaviour
         else
         {
             AttackToggleNotification();
+            if (!IsHost && !_secretBoxOnNetwork)
+            {
+                var spawnedObjs = NetworkManager.Singleton.SpawnManager.SpawnedObjects;
+                foreach (var objs in spawnedObjs)
+                {
+                    if (objs.Key == _networkObjId.Value)
+                        _secretBoxOnNetwork = objs.Value.GetComponent<SecretBox>();
+                }
+            }
+            
+            var playerNetworkObject = NetworkManager.LocalClient.PlayerObject;
+            playerNetworkObject.GetComponent<PlayerFunction>().GetSecretBox(_secretBoxOnNetwork.GetComponent<NetworkObject>());
         }
 
     }

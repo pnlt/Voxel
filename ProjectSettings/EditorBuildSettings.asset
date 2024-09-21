@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Project/Scenes/Maps/DessertMap.unity
     guid: 0c3ad295a32b6aa4797262a8b23da340
+  - enabled: 1
+    path: Assets/_Project/Scenes/WinScene.unity
+    guid: 4dc83625d93ca2d4285db54c4896d5b4
+  - enabled: 1
+    path: Assets/_Project/Scenes/LoseScene.unity
+    guid: c8c986a5b92318442b7223472111b8d4
   m_configObjects: {}
