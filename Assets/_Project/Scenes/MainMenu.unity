@@ -6538,12 +6538,36 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 409974787}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
-  buttonType: 1
+      m_Calls:
+      - m_Target: {fileID: 900438580}
+        m_TargetAssemblyTypeName: cowsins.MainMenuManager, Assembly-CSharp
+        m_MethodName: SetGameMode
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 1
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 900438583}
+        m_TargetAssemblyTypeName: Game.MainMenuController, Assembly-CSharp
+        m_MethodName: JoinDemoRoom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  buttonType: 2
   sectionToEnable: {fileID: 0}
   sectionsToDisable: []
   clickSFX: {fileID: 8300000, guid: f0827c5b4470d834d956b66b0063183b, type: 3}
-  sceneIndex: 8
+  sceneIndex: 5
 --- !u!114 &409974787
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14904,6 +14928,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   introMenu: {fileID: 1312945921}
   mainMenu: {fileID: 330823511}
+  gameMode: 0
 --- !u!82 &900438581
 AudioSource:
   m_ObjectHideFlags: 0
@@ -17460,6 +17485,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 900438580}
+        m_TargetAssemblyTypeName: cowsins.MainMenuManager, Assembly-CSharp
+        m_MethodName: SetGameMode
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 668189917}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive

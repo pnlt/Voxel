@@ -1,3 +1,4 @@
+using cowsins;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -21,7 +22,15 @@ public class LoadingScene : MonoBehaviour
         AsyncOperation lobbySceneOperation;
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            lobbySceneOperation = SceneManager.LoadSceneAsync("lobby");
+            if (MainMenuManager.Instance.gameMode == 0)
+            {
+                lobbySceneOperation = SceneManager.LoadSceneAsync("lobby");
+
+            }
+            else
+            {
+                lobbySceneOperation = SceneManager.LoadSceneAsync("DemoRoom");
+            }
         }
         else 
         {

@@ -128,8 +128,6 @@ namespace InfimaGames.LowPolyShooterPack
                     EditorGUILayout.FloatField(new GUIContent(" Fire Transition"), weapon.fireTransition);
 
                 weapon.tracerRounds = EditorGUILayout.Toggle(new GUIContent(" Tracer Rounds"), weapon.tracerRounds);
-                weapon.projectileSize =
-                    EditorGUILayout.FloatField(new GUIContent(" Projectile Size"), weapon.projectileSize);
                 weapon.decalSize = EditorGUILayout.FloatField(new GUIContent(" Decal Size"), weapon.decalSize);
                 weapon.afterShotReliefTime = EditorGUILayout.FloatField(new GUIContent(" After Shot Relief Time"),
                     weapon.afterShotReliefTime);

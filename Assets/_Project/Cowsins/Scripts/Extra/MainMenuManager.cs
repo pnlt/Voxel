@@ -13,6 +13,8 @@ namespace cowsins
 
         private AudioSource audioSource;
 
+        public float gameMode;
+
         private void Awake()
         {
             if (Instance == null)
@@ -23,6 +25,11 @@ namespace cowsins
             {
                 Destroy(gameObject);
             }
+        }
+
+        public void SetGameMode(float gameMode)
+        {
+            this.gameMode = gameMode;
         }
 
         private void Start()

@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game;
+using InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infima_Games.Low_Poly_Shooter_Pack.Code.GameFramework.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -70,6 +71,13 @@ namespace Game
             {
                 StartCoroutine(LoadingAsync());
             }
+        }
+
+        public async void JoinDemoRoom()
+        {
+            string relayJoinCode = await RelayManager.Instance.CreateRelay(1);
+
+            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
         }
     }
 }

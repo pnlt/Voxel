@@ -69,7 +69,6 @@ public class Spawner : NetworkBehaviour
         newProjectile.source = weapon;
         newProjectile.range = range;
         newProjectile.useAutoScaling = weapon.data.tracerRounds;
-        newProjectile.scaleMultipler = weapon.data.projectileSize;
         newProjectile.damageRangeCurve = weapon.data.damageRangeCurve;
     }
 }
