@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Game;
+using InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infima_Games.Low_Poly_Shooter_Pack.Code.GameFramework.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,43 +12,20 @@ namespace Game
 {
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private GameObject _mainScreen;
-        [SerializeField] private GameObject _joinScreen;
         [SerializeField] private Button _hostButton;
-        [SerializeField] private Button _joinButton;
-        [SerializeField] private Button _rejoinButton;
-        [SerializeField] private Button _leaveButton;
-
         [SerializeField] private Button _submitCodeButton;
         [SerializeField] private TextMeshProUGUI _codeText;
 
         private void OnEnable()
         {
             _hostButton.onClick.AddListener(OnHostClicked);
-            _joinButton.onClick.AddListener(OnJoinClicked);
             _submitCodeButton.onClick.AddListener(OnSubmitCodeClicked);
         }
 
         private void OnDisable()
         {
             _hostButton.onClick.RemoveListener(OnHostClicked);
-            _joinButton.onClick.RemoveListener(OnJoinClicked);
             _submitCodeButton.onClick.RemoveListener(OnSubmitCodeClicked);
-        }
-
-        private async void Start()
-        {
-            if (await GameLobbyManager.Instance.HasActivelobbies())
-            {
-                _hostButton.gameObject.SetActive(false);
-                _joinButton.gameObject.SetActive(false);
-                
-                _rejoinButton.gameObject.SetActive(true);
-                _leaveButton.gameObject.SetActive(true);
-                
-                _rejoinButton.onClick.AddListener(OnRejoinGameClicked);
-                _leaveButton.onClick.AddListener(OnLeaveGameClicked);
-            }
         }
 
         private async void OnLeaveGameClicked()
@@ -68,20 +46,19 @@ namespace Game
           }
         }
 
-
         private async void OnHostClicked()
         {
             bool succeeded = await GameLobbyManager.Instance.CreateLobby();
             if (succeeded)
             {
-                SceneManager.LoadSceneAsync("Lobby");
+                StartCoroutine(LoadingAsync());
             }
         }
 
-        private void OnJoinClicked()
+        IEnumerator LoadingAsync()
         {
-            _mainScreen.SetActive(false);
-            _joinScreen.SetActive(true);
+            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
+            yield return null;
         }
 
         private async void OnSubmitCodeClicked()
@@ -92,8 +69,15 @@ namespace Game
             bool succeeded = await GameLobbyManager.Instance.JoinLobby(code);
             if (succeeded)
             {
-                SceneManager.LoadSceneAsync("Lobby");
+                StartCoroutine(LoadingAsync());
             }
+        }
+
+        public async void JoinDemoRoom()
+        {
+            string relayJoinCode = await RelayManager.Instance.CreateRelay(1);
+
+            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
         }
     }
 }

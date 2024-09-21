@@ -12,10 +12,10 @@ using Akila.FPSFramework;
 using Demo.Scripts.Runtime.Character;
 using InfimaGames.LowPolyShooterPack;
 using InfimaGames.LowPolyShooterPack._Project.ScriptsPN;
-using Unity.Netcode;
 using UnityEngine;
 using MathUtilities = Akila.FPSFramework.MathUtilities;
 using Random = UnityEngine.Random;
+using Unity.Netcode;
 
 namespace Demo.Scripts.Runtime.Item
 {
@@ -328,9 +328,9 @@ namespace Demo.Scripts.Runtime.Item
             
             if (hit.transform.GetComponentInParent<PlayerSpirit>())
             {
-                    var playerHit = hit.collider.GetComponentInParent<NetworkObject>();
-                    switch (hit.collider.gameObject.tag)
-                    {
+                var playerHit = hit.collider.GetComponentInParent<NetworkObject>();
+                switch (hit.collider.gameObject.tag)
+                {
                     case "Head":
                         hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.HEAD, playerHit.OwnerClientId);
                         break;
@@ -340,7 +340,7 @@ namespace Demo.Scripts.Runtime.Item
                     case "Lower body":
                         hit.collider.gameObject.GetComponentInParent<PlayerSpirit>().TakeDamage(damageValue, PlayerSpirit.BodyPart.LOWER_BODY, playerHit.OwnerClientId);
                         break;
-                    }
+                }
             }
 
              if (hit.transform.TryGetComponent(out CustomDecal customDecal))

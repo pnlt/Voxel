@@ -40,7 +40,6 @@ namespace InfimaGames.LowPolyShooterPack
         public float lowerdDelay = 10;
 
         public bool tracerRounds = true;
-        public float projectileSize = 40;
 
         public float decalSize = 1;
 

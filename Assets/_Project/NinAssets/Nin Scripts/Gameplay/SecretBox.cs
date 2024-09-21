@@ -14,6 +14,7 @@ public class SecretBox : NetworkBehaviour
     public BoxState state;
     
     private bool _activated;
+    public bool Activate => _activated;
     private NetworkVariable<int> _voxelAvailable = new NetworkVariable<int>();
     [SerializeField] private int _maxVoxels = 3;
 
@@ -73,10 +74,15 @@ public class SecretBox : NetworkBehaviour
             var playerNetworkObj = NetworkManager.LocalClient.PlayerObject;
             var playerObj = playerNetworkObj.GetComponent<PlayerFunction>();
             
+
             if (playerObj.HasSecretBox)
+            {
                 Debug.LogError("Winner");
-            else 
+            }
+            else
+            {
                 Debug.LogError("Lose");
+            }
             
         }
     }

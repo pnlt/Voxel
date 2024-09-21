@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class EffectsPN : MonoBehaviour
+public class EffectsPN : NetworkBehaviour
 {
 	public Material screenDamageMat;
 	private Coroutine screenDamageTask;

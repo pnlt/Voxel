@@ -105,13 +105,15 @@ namespace Game
                    if (_lobbyData.RelayJoinCode != _previousRelayCode)
                    {
                        await JoinRelayServer(_lobbyData.RelayJoinCode);
-                       SceneManager.LoadSceneAsync(_lobbyData.SceneName);
-                   }
+                       SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
+
+                    }
                 }
                 else
                 {
                        await JoinRelayServer(_lobbyData.RelayJoinCode);
-                       SceneManager.LoadSceneAsync(_lobbyData.SceneName);
+                    SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
+
                 }
             }
         }
@@ -155,9 +157,9 @@ namespace Game
             _localLobbyPlayerData.IsReady = false;
             await LobbyManager.Instance.UpdatePlayerData(_localLobbyPlayerData.Id, _localLobbyPlayerData.Serialize(), allocationId, connectionData);
 
-            SceneManager.LoadSceneAsync(_lobbyData.SceneName);
+            SceneManager.LoadSceneAsync("Loading", LoadSceneMode.Additive);
         }
-        
+
         private async Task<bool> JoinRelayServer(string relayJoinCode)
         {
             _inGame = true;
@@ -166,6 +168,7 @@ namespace Game
             string connectionData = RelayManager.Instance.GetConnectionData();
             _localLobbyPlayerData.IsReady = false;
             await LobbyManager.Instance.UpdatePlayerData(_localLobbyPlayerData.Id, _localLobbyPlayerData.Serialize(), allocationId, connectionData);
+
             return true;
         }
 

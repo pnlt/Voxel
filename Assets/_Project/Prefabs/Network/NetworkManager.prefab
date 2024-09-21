@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6776635014537037047}
-  - component: {fileID: 1693017352154793523}
-  - component: {fileID: 4083322870696203578}
+  - component: {fileID: 5271674040658167560}
+  - component: {fileID: 4140306540192921689}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1693017352154793523
+--- !u!114 &5271674040658167560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,7 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NetworkConfig:
     ProtocolVersion: 0
-    NetworkTransport: {fileID: 4083322870696203578}
+    NetworkTransport: {fileID: 4140306540192921689}
     PlayerPrefab: {fileID: 7102044144766431328, guid: 67e4bc50a87761743a89b599eff52d79,
       type: 3}
     Prefabs:
@@ -71,7 +71,7 @@ MonoBehaviour:
     OldPrefabList: []
   RunInBackground: 1
   LogLevel: 1
---- !u!114 &4083322870696203578
+--- !u!114 &4140306540192921689
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

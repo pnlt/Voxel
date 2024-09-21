@@ -2,13 +2,10 @@ using System;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using Demo.Scripts.Runtime.Character;
-using InfimaGames.LowPolyShooterPack.Assets_ăn_trộm._External_Assets.Infima_Games.Low_Poly_Shooter_Pack.Code.Client;
-using KINEMATION.KAnimationCore.Runtime.Input;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using NetworkObject = Unity.Netcode.NetworkObject;
 using Random = UnityEngine.Random;
 
 public class PlayerSpirit : NetworkBehaviour, IHealthSystem
@@ -27,21 +24,19 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     public bool getShot;
 
     public GameObject playerUI;
+    public GameObject miniMapUI;
     public TextMeshProUGUI currentHealthTxt;
     public Image healthVisual;
 
     public TextMeshProUGUI currentAmountTxt;
     public TextMeshProUGUI totalAmountTxt;
-
     public float blinkIntensity;
     public float blinkDuration;
     float blinkTimer;
     SkinnedMeshRenderer skinnedMeshRenderer;
-
     private void Awake()
     {
         currentHealth.Value = maxHealth;
-        skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
     }
 
     private void Start()
@@ -50,10 +45,12 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         if (IsOwner)
         {
             playerUI.SetActive(true);
+            miniMapUI.SetActive(true);
         }
         else
         {
             playerUI.SetActive(false);
+            miniMapUI.SetActive(false);
         }
     }
 
@@ -92,65 +89,38 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         transform.eulerAngles = playerRotation;
     }
 
-    public void TakeDamage(int damageValue, BodyPart position, ulong clientId)
-    {
-        if (getShot) return;
-        getShot = true;
-        
-        if (m_IsPlayerDead) return;
-        
-        switch (position)
-        {
-            case BodyPart.HEAD:
-                currentHealth.Value -= maxHealth;
-                break;
-            case BodyPart.BODY:
-                currentHealth.Value -= damageValue * Random.Range(1, 2);
-                break;
-            case BodyPart.LOWER_BODY:
-                currentHealth.Value -= damageValue * 1;
-                break;
-        }
-        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
-        PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
-        GetShotEffect(.2f);
-        //EffectsPN.SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
-        Die(clientId);
-        
-        blinkTimer = blinkDuration;
-        
-        EffectsPN.SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
-    }
-
     private void Update()
     {
         blinkTimer -= Time.deltaTime;
         float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
         float intensity = (lerp * blinkIntensity) + 1.0f;
-        skinnedMeshRenderer.material.color = Color.white * intensity;
+        //skinnedMeshRenderer.material.color = Color.white * intensity;
     }
 
     public void Die(ulong clientId)
     {
         if (m_IsPlayerDead)
         {
+            Debug.Log("Die");
             NetworkObject playerPrefab = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             playerPrefab.GetComponent<FPSMovement>().enabled = false;
-            playerPrefab.GetComponent<FPSController>().enabled = false;    
+            playerPrefab.GetComponent<FPSController>().enabled = false;
             RespawnPlayer(clientId);
         }
     }
-  
+
     public void RespawnPlayer(ulong clientId)
     {
         StartCoroutine(RespawnPlayerWithDelay(clientId, 5f));
     }
+
     private IEnumerator RespawnPlayerWithDelay(ulong clientId, float delay)
     {
-        yield return new WaitForSeconds(delay); 
+        yield return new WaitForSeconds(delay);
 
-        RespawnPlayerServerRpc(clientId); 
+        RespawnPlayerServerRpc(clientId);
     }
+
     [ServerRpc(RequireOwnership = false)]
     private void RespawnPlayerServerRpc(ulong clientId)
     {
@@ -167,7 +137,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
                 RespawnPlayerClientRpc(clientId, respawnPosition);
             }
         }
-        
+
     }
     [ClientRpc]
     private void RespawnPlayerClientRpc(ulong clientId, Vector3 respawnPosition)
@@ -183,6 +153,37 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
             }
         }
     }
+
+    public void TakeDamage(int damageValue, BodyPart position, ulong clientId)
+    {
+        if (getShot) return;
+        getShot = true;
+
+        if (m_IsPlayerDead) return;
+
+        switch (position)
+        {
+            case BodyPart.HEAD:
+                currentHealth.Value -= maxHealth;
+                break;
+            case BodyPart.BODY:
+                currentHealth.Value -= damageValue * Random.Range(1, 2);
+                break;
+            case BodyPart.LOWER_BODY:
+                currentHealth.Value -= damageValue * 1;
+                break;
+        }
+        currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
+        PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
+        GetShotEffect(.2f);
+        //SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
+        Die(clientId);
+
+        blinkTimer = blinkDuration;
+
+        SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
+    }
+
 
     [ClientRpc]
     public void PlayerHealthUpdateCurrentHealthTxtClientRpc(int currentHealth)
@@ -202,5 +203,51 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     public void UpdateTotalAmountTxt(int totalAmount)
     {
         totalAmountTxt.text = totalAmount.ToString();
+    }
+
+
+
+    //PHU NGUYEN
+
+    public Material screenDamageMat;
+    private Coroutine screenDamageTask;
+
+    private void ScreenDamageEffect(float intensity)
+    {
+        if (screenDamageTask != null)
+            StopCoroutine(screenDamageTask);
+
+        screenDamageTask = StartCoroutine(screenDamage(intensity));
+    }
+    private IEnumerator screenDamage(float intensity)
+    {
+        // Screen Effect
+        var targetRadius = Remap(intensity, 0, 1, 0.4f, -0.1f);
+        var curRadius = 1f;
+        for (float t = 0; curRadius != targetRadius; t += Time.deltaTime)
+        {
+            curRadius = Mathf.Clamp(Mathf.Lerp(1, targetRadius, t), 1, targetRadius);
+            screenDamageMat.SetFloat("_Vignette_radius", curRadius);
+            Debug.Log("log");
+            yield return null;
+        }
+        for (float t = 0; curRadius < 1; t += Time.deltaTime)
+        {
+            curRadius = Mathf.Lerp(targetRadius, 1, t);
+            screenDamageMat.SetFloat("_Vignette_radius", curRadius);
+            Debug.Log("log");
+            yield return null;
+        }
+
+    }
+
+    private float Remap(float value, float fromMin, float fromMax, float toMin, float toMax)
+    {
+        return Mathf.Lerp(toMin, toMax, Mathf.InverseLerp(fromMin, fromMax, value));
+    }
+
+    public static class SpecialEffects
+    {
+        public static void ScreenDamageEffect(float intensity) => ScreenDamageEffect(intensity);
     }
 }
