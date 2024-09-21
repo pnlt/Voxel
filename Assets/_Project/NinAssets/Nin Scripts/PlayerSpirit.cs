@@ -24,6 +24,7 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     public bool getShot;
 
     public GameObject playerUI;
+    public GameObject miniMapUI;
     public TextMeshProUGUI currentHealthTxt;
     public Image healthVisual;
 
@@ -44,10 +45,12 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         if (IsOwner)
         {
             playerUI.SetActive(true);
+            miniMapUI.SetActive(true);
         }
         else
         {
             playerUI.SetActive(false);
+            miniMapUI.SetActive(false);
         }
     }
 
@@ -91,13 +94,14 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         blinkTimer -= Time.deltaTime;
         float lerp = Mathf.Clamp01(blinkTimer / blinkDuration);
         float intensity = (lerp * blinkIntensity) + 1.0f;
-        skinnedMeshRenderer.material.color = Color.white * intensity;
+        //skinnedMeshRenderer.material.color = Color.white * intensity;
     }
 
     public void Die(ulong clientId)
     {
         if (m_IsPlayerDead)
         {
+            Debug.Log("Die");
             NetworkObject playerPrefab = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             playerPrefab.GetComponent<FPSMovement>().enabled = false;
             playerPrefab.GetComponent<FPSController>().enabled = false;
@@ -172,12 +176,12 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
         currentHealth.Value = Mathf.Clamp(currentHealth.Value, 0, maxHealth);
         PlayerHealthUpdateCurrentHealthTxtClientRpc(currentHealth.Value);
         GetShotEffect(.2f);
-        //EffectsPN.SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
+        //SpecialEffects.ScreenDamageEffect((float)damageValue / maxHealth);
         Die(clientId);
 
         blinkTimer = blinkDuration;
 
-        EffectsPN.SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
+        SpecialEffects.ScreenDamageEffect(Random.Range(0.1f, 1));
     }
 
 
@@ -199,5 +203,51 @@ public class PlayerSpirit : NetworkBehaviour, IHealthSystem
     public void UpdateTotalAmountTxt(int totalAmount)
     {
         totalAmountTxt.text = totalAmount.ToString();
+    }
+
+
+
+    //PHU NGUYEN
+
+    public Material screenDamageMat;
+    private Coroutine screenDamageTask;
+
+    private void ScreenDamageEffect(float intensity)
+    {
+        if (screenDamageTask != null)
+            StopCoroutine(screenDamageTask);
+
+        screenDamageTask = StartCoroutine(screenDamage(intensity));
+    }
+    private IEnumerator screenDamage(float intensity)
+    {
+        // Screen Effect
+        var targetRadius = Remap(intensity, 0, 1, 0.4f, -0.1f);
+        var curRadius = 1f;
+        for (float t = 0; curRadius != targetRadius; t += Time.deltaTime)
+        {
+            curRadius = Mathf.Clamp(Mathf.Lerp(1, targetRadius, t), 1, targetRadius);
+            screenDamageMat.SetFloat("_Vignette_radius", curRadius);
+            Debug.Log("log");
+            yield return null;
+        }
+        for (float t = 0; curRadius < 1; t += Time.deltaTime)
+        {
+            curRadius = Mathf.Lerp(targetRadius, 1, t);
+            screenDamageMat.SetFloat("_Vignette_radius", curRadius);
+            Debug.Log("log");
+            yield return null;
+        }
+
+    }
+
+    private float Remap(float value, float fromMin, float fromMax, float toMin, float toMax)
+    {
+        return Mathf.Lerp(toMin, toMax, Mathf.InverseLerp(fromMin, fromMax, value));
+    }
+
+    public static class SpecialEffects
+    {
+        public static void ScreenDamageEffect(float intensity) => ScreenDamageEffect(intensity);
     }
 }

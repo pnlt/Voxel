@@ -3189,12 +3189,14 @@ MonoBehaviour:
     m_InternalValue: 0
   getShot: 0
   playerUI: {fileID: 6314256849017511301}
+  miniMapUI: {fileID: 416488568977289857}
   currentHealthTxt: {fileID: 6678888763380567819}
   healthVisual: {fileID: 7602434964368943347}
   currentAmountTxt: {fileID: 6314256848565988529}
   totalAmountTxt: {fileID: 8771655144667509840}
-  blinkIntensity: 0
-  blinkDuration: 0
+  blinkIntensity: 10
+  blinkDuration: 0.1
+  screenDamageMat: {fileID: 2100000, guid: 2b6d224c7128bc04a8096798dfe58679, type: 2}
 --- !u!114 &3300909210458206618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5252,6 +5254,12 @@ PrefabInstance:
 --- !u!4 &416488568977079927 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7422905880016574999, guid: 7f7b3a76cb8bad74aae2cca9025cda7e,
+    type: 3}
+  m_PrefabInstance: {fileID: 7117059276503802976}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &416488568977289857 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7422905880016754401, guid: 7f7b3a76cb8bad74aae2cca9025cda7e,
     type: 3}
   m_PrefabInstance: {fileID: 7117059276503802976}
   m_PrefabAsset: {fileID: 0}
